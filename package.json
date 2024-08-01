@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage": "https://holnyx.github.io/SNP-todolist-react",
+  "homepage": "https://holnyx.github.io/SNP-music-list",
   "private": true,
   "type": "module",
   "scripts": {
