@@ -1,0 +1,62 @@
+.container
+    position: relative
+    display: flex
+    flex-wrap: wrap
+    justify-content: flex-start
+    gap: 20px
+    width: 100%
+    
+    .item
+        display: flex
+        flex-direction: column
+        gap: 15px
+        width: 232px
+
+.icon
+    width: 232px
+    height: 232px
+    border-radius: 6px
+
+.names
+    display: flex
+    justify-content: space-between
+
+.performer
+    display: flex
+    justify-content: center
+    flex-direction: column
+    align-items: flex-start
+    gap: 15px
+
+    .logo
+        display: block
+        max-width: 176px
+        text-overflow: ellipsis
+        white-space: nowrap
+        overflow: hidden
+
+    .genre
+        display: block
+        max-width: 176px
+        text-overflow: ellipsis
+        white-space: nowrap
+        overflow: hidden
+
+.genre
+    display: flex
+    flex-direction: column
+    align-items: flex-end
+    gap: 8px
+
+    .button
+        width: 38px
+        padding: 6px
+        color: #f90
+        background: none
+        border: 1px solid #f90
+        border-radius: 6px
+        cursor: pointer
+
+        &:active
+            background-color: #f90
+            color: #1b1a1a

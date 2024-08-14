@@ -1,22 +1,22 @@
 import Head from 'next/head';
-import HomePage from '@/components/pages/HomePage/HomePage';
+import NotFoundPage from '@/components/pages/NotFound/NotFound';
 
-export default function Home() {
+export default function NotFound() {
   return (
     <>
       <Head>
-        <title>Music List</title>
+        <title>YourTour</title>
         <meta
           name="description"
-          content="Todo List"
+          content="Идеальные путешествия существуют"
         />
         <meta
           name="keywords"
-          content="todo, todo list, tasks, task"
+          content="путешествия, туры, туризм, отдых"
         />
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"
+          content="width=device-width, initial-scale=1"
         />
         <link
           rel="icon"
@@ -36,7 +36,7 @@ export default function Home() {
           rel="stylesheet"
         />
       </Head>
-      <HomePage />
+      <NotFoundPage />
     </>
   );
 }
