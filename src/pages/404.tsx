@@ -5,14 +5,14 @@ export default function NotFound() {
   return (
     <>
       <Head>
-        <title>YourTour</title>
+        <title>Page not found</title>
         <meta
           name="description"
-          content="Идеальные путешествия существуют"
+          content="Page not found"
         />
         <meta
           name="keywords"
-          content="путешествия, туры, туризм, отдых"
+          content="not found, 404"
         />
         <meta
           name="viewport"

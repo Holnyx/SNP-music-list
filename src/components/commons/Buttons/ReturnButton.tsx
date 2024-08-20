@@ -6,10 +6,10 @@ type ButtonItems = {
     className: string
 }
 
-const Button: FC<ButtonItems> = ({getTitle, href, className}) => {
+const ReturnButton: FC<ButtonItems> = ({getTitle, href, className}) => {
     return (
       <a href={href} className={className}>{getTitle}</a>
     );
 };
 
-export default memo(Button);
+export default memo(ReturnButton);

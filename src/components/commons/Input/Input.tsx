@@ -1,7 +1,10 @@
-import React, { FC, memo } from 'react';
+import React, { ChangeEvent, FC, memo, useCallback, useState } from 'react';
 
 import s from './Input.module.sass';
 import cx from 'classnames';
+import { useActionWithPayload } from '@/hooks/hooks';
+import { MusicItems } from '@/store/types';
+import { addMusicAC } from '@/store/actions';
 
 type InputItems = {
   getType: string;
@@ -11,7 +14,8 @@ type InputItems = {
   maxLength?: number;
   pattern?: string;
   max?: string;
-  accept?: string
+  accept?: string;
+  value?: string | number;
 };
 
 const Input: FC<InputItems> = ({
@@ -21,10 +25,18 @@ const Input: FC<InputItems> = ({
   maxLength,
   pattern,
   max,
-  accept
+  accept,
+  value,
 }) => {
+  let [valueInputs, setValueInputs] = useState(value);
+
+  const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+    setValueInputs(e.currentTarget.value);
+  };
+
   return (
     <input
+      onChange={changeTitle}
       placeholder={getPlaceholder}
       required={required}
       className={s.style}
@@ -33,6 +45,7 @@ const Input: FC<InputItems> = ({
       pattern={pattern}
       max={max}
       accept={accept}
+      value={valueInputs}
     ></input>
   );
 };

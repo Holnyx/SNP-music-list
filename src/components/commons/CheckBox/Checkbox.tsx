@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { Dispatch, FC, memo, SetStateAction } from 'react';
 
 import s from './Checkbox.module.sass';
 import cx from 'classnames';
@@ -6,16 +6,28 @@ import cx from 'classnames';
 type CheckBoxItem = {
   label?: string;
   link?: string;
+  removeImage?: () => void;
+  checked: boolean;
+  setChecked: Dispatch<SetStateAction<boolean>>;
 };
 
-const CheckBox: FC<CheckBoxItem> = ({ label }) => {
+const CheckBox: FC<CheckBoxItem> = ({
+  label,
+  removeImage,
+  checked,
+  setChecked,
+}) => {
   return (
     <div className={s.new_checkbox}>
       <input
         className={s.checkbox}
         type="checkbox"
         id="confirm"
-        required
+        onChange={() => {
+          removeImage;
+          setChecked(!checked);
+        }}
+        checked={checked}
       ></input>
       <label
         className={s.custom_checkbox}
@@ -33,9 +45,9 @@ const CheckBox: FC<CheckBoxItem> = ({ label }) => {
           <path
             d="M19 2L9.66774 16.4101C9.47218 16.7121 9.0467 16.754 8.79602 16.4959L2 9.5"
             stroke="#FF9900"
-            stroke-width="2.24"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2.24"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </label>

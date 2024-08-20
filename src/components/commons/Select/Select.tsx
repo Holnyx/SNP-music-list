@@ -1,33 +1,15 @@
-import React, { ChangeEvent, memo, useState } from 'react';
+import React, { ChangeEvent, FC, memo, useState } from 'react';
 
 import s from './Select.module.sass';
 import cx from 'classnames';
+import { genresItems } from '@/store/types';
 
-export type GenresItems = {
+type SelectItems = {
   value: string;
-  title: string;
-  disabled?: boolean;
 };
 
-const genresItems: GenresItems[] = [
-  { value: '1', title: 'Choose genre', disabled: true },
-  { value: '2', title: 'Blues' },
-  { value: '3', title: 'Classical' },
-  { value: '4', title: 'Country' },
-  { value: '5', title: 'Dance' },
-  { value: '6', title: 'Electronic' },
-  { value: '7', title: 'Hip-Hop' },
-  { value: '8', title: 'Jazz' },
-  { value: '9', title: 'Latin' },
-  { value: '10', title: 'Rock' },
-  { value: '11', title: 'Pop' },
-  { value: '12', title: 'Reggae / Dancehall' },
-  { value: '13', title: 'Funk' },
-  { value: '14', title: 'Other' },
-];
-
-const Select = () => {
-  const [select, setSelect] = useState('1');
+const Select: FC<SelectItems> = ({ value }) => {
+  const [select, setSelect] = useState(value);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelect(event.currentTarget.value);
@@ -44,7 +26,6 @@ const Select = () => {
 
   return (
     <>
-      {' '}
       <select
         name="genre"
         id="genre"

@@ -1,12 +1,21 @@
-import React, { memo } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
-import s from './MusicFrame.module.sass';
+import s from './AddImageInput.module.sass';
 import cx from 'classnames';
 
-const MusicFrame = () => {
+// type AddImageInputItems = {
+//   image?: string | null;
+//   checked: boolean;
+// };
+
+const AddImageInput = () => {
   return (
-    <div className={s.container}>
-      <div className={s.item}>
+    <>
+      <label
+        htmlFor="image-uploads"
+        className={cx(s.add_image, s.add_image_checked)}
+        title="Click for add cover for your track"
+      >
         <svg
           className={s.icon}
           xmlns="http://www.w3.org/2000/svg"
@@ -23,19 +32,16 @@ const MusicFrame = () => {
             fill="#1d1d1d"
           />
         </svg>
-        <div className={s.names}>
-          <div className={s.performer}>
-            <div className={s.logo}>Woh pehli dafawdawdadawdadwadwdsadwada</div>
-            <div className={s.genre}>DZ Messili</div>
-          </div>
-          <div className={s.genre}>
-            <button className={s.button}>Info</button>
-            <button className={s.button}>Edit</button>
-          </div>
-        </div>
-      </div>
-    </div>
+      </label>
+      <input
+        disabled
+        type={'file'}
+        className={s.uploads}
+        accept={'.jpg, .jpeg, .png'}
+        id={'image-uploads'}
+      />
+    </>
   );
 };
 
-export default memo(MusicFrame);
+export default AddImageInput;

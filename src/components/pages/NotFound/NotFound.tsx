@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import Button from '@/components/commons/Button/Button';
+import ReturnButton from '@/components/commons/Buttons/ReturnButton';
 
 import s from './NotFound.module.sass';
 import cx from 'classnames';
@@ -14,7 +14,7 @@ const NotFoundPage = () => {
         <p className={s['not-found-page__info']}>
           Could not find requested resource
         </p>
-        <Button
+        <ReturnButton
           className={s['link-home']}
           getTitle={'Return home'}
           href={'/'}
