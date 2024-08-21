@@ -3,6 +3,7 @@ import ModalWindow from '../ModalWindow/ModalWindow';
 
 import s from './Header.module.sass';
 import cx from 'classnames';
+import SearchInput from '../SearchInput/SearchInput';
 
 type HeaderItems = {
   menuIsOpen: boolean;
@@ -10,7 +11,6 @@ type HeaderItems = {
 };
 
 const Header: FC<HeaderItems> = ({ menuIsOpen, setMenuIsOpen }) => {
-
   return (
     <div className={s.header}>
       <button
@@ -51,6 +51,7 @@ const Header: FC<HeaderItems> = ({ menuIsOpen, setMenuIsOpen }) => {
           </defs>
         </svg>
       </button>
+      <SearchInput />
     </div>
   );
 };

@@ -1,4 +1,13 @@
-import React, { Dispatch, FC, memo, SetStateAction, useCallback, useState } from 'react';
+import React, {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  memo,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import Input from '../Input/Input';
 import AddImageInput from '../Input/AddImageInput/AddImageInput';
@@ -6,10 +15,12 @@ import Button from '../Buttons/Button/Button';
 
 import s from './ModalWindow.module.sass';
 import cx from 'classnames';
-import { GenresItems, MusicItems } from '@/store/types';
+import { genresItems, GenresItems, MusicItems } from '@/store/types';
 import Select from '../Select/Select';
 import { useActionWithPayload } from '@/hooks/hooks';
 import { addMusicAC } from '@/store/actions';
+import { useSelector } from 'react-redux';
+import { musicSelector } from '@/store/selectors';
 
 type ModalWindowItems = {
   id: string;
@@ -22,6 +33,11 @@ type ModalWindowItems = {
   deleteMusicOnClick: (id: string) => void;
   checked: boolean;
   setChecked: Dispatch<SetStateAction<boolean>>;
+  name: string;
+  performer: string;
+  genre: GenresItems;
+  year: number;
+  selectedMusicId: string;
 };
 
 const ModalWindow: FC<ModalWindowItems> = ({
@@ -33,53 +49,38 @@ const ModalWindow: FC<ModalWindowItems> = ({
   editIsOpen,
   setEditIsOpen,
   deleteMusicOnClick,
-  checked,
-  setChecked,
+  name,
+  performer,
+  genre,
+  year,
+  selectedMusicId,
 }) => {
-  const [selectedGenre, setSelectedGenre] = useState<GenresItems>({
-    value: '15',
-    title: 'All',
-  });
-  const [formData, setFormData] = useState({
-    id: '',
-    name: '',
-    performer: '',
-    genre: selectedGenre,
-    year: 0,
-  });
+  const [inputName, setInputName] = useState(name);
+  const [inputPerformer, setInputPerformer] = useState(performer);
+  const [selectGenre, setSelectGenre] = useState(genresItems[0]);
+  const [inputYear, setInputYear] = useState(year);
 
   const closeModalWindow = () => {
     setMenuIsOpen(false);
     setInfoIsOpen(false);
     setEditIsOpen(false);
   };
+  const allMusics = useSelector(musicSelector);
 
-  const [taskTitle, setTaskTitle] = useState('');
+  const addMusicAction = useActionWithPayload(addMusicAC);
 
-  const addTaskAction = useActionWithPayload(addMusicAC);
+  const newMusic: MusicItems = {
+    id: id,
+    name: inputName,
+    performer: inputPerformer,
+    genre: selectGenre,
+    year: inputYear,
+  };
 
-  const addTask = useCallback((music: MusicItems) => {
-    addTaskAction({ music });
+  const addTaskHandler = useCallback((music: MusicItems) => {
+    addMusicAction({ music: music });
+    closeModalWindow();
   }, []);
-
-  const addTaskHandler = useCallback(() => {
-    if (taskTitle.trim() !== '') {
-      addTask({
-        id: '',
-        name: taskTitle,
-        performer: '',
-        genre: selectedGenre,
-        year: 0,
-      });
-    }
-    setTaskTitle('');
-  }, [taskTitle, addTask]);
-
-
-  // const addMusic = (music: MusicItems) => {
-  //   setList([...list, music]);
-  //   setMenuIsOpen(false)
-  // };
 
   const showModalWindow = cx(s.container, {
     [s.active]: menuIsOpen || infoIsOpen || editIsOpen,
@@ -87,6 +88,25 @@ const ModalWindow: FC<ModalWindowItems> = ({
 
   const addMusic = cx(s.buttons_box, { [s.add_music]: menuIsOpen });
   const infoMusic = cx(s.window, { [s.info]: infoIsOpen });
+
+  const changeGenre = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.currentTarget.value;
+    const selectedGenre = genresItems.find(
+      genre => genre.value === selectedValue
+    );
+    if (selectedGenre) {
+      setSelectGenre(selectedGenre);
+    }
+  };
+
+  const changeYear = (e: ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(e.currentTarget.value, 10);
+    if (!isNaN(newValue)) {
+      setInputYear(newValue);
+    }
+  };
+
+  const selectedMusic = allMusics.find(music => music.id === selectedMusicId);
 
   return (
     <div
@@ -123,38 +143,47 @@ const ModalWindow: FC<ModalWindowItems> = ({
             <AddImageInput />
           </fieldset>
           <fieldset className={s.fieldset}>
-            {infoIsOpen ? (
+            {infoIsOpen && selectedMusicId && selectedMusic ? (
               <>
                 <span className={s.label}>Name</span>
-                <h6>{formData.name}</h6>
+                <h6>{inputName}</h6>
                 <span className={s.label}>Performer</span>
-                <h6>{formData.performer}</h6>
+                <h6>{inputPerformer}</h6>
                 <span className={s.label}>Genre</span>
-                <h6>{String(formData.genre)}</h6>
+                <h6>{selectGenre.title}</h6>
                 <span className={s.label}>Year</span>
-                <h6>{formData.year}</h6>
+                <h6>{inputYear}</h6>
               </>
             ) : (
               <>
                 <Input
-                  getType={'text'}
+                  onChange={setInputName}
                   getPlaceholder={'Name'}
-                  required={true}
-                  value={editIsOpen ? formData.name : ''}
-                />
-                <Input
+                  required
+                  className={s['style-input']}
                   getType={'text'}
-                  getPlaceholder={'Performer'}
-                  required={true}
-                  value={editIsOpen ? formData.performer : ''}
+                  value={inputName}
                 />
-                <Select value={editIsOpen ? String(formData.genre) : ''} />
                 <Input
-                  getType={'number'}
-                  getPlaceholder={'Year'}
-                  max="2024"
-                  value={editIsOpen ? formData.year : ''}
+                  onChange={setInputPerformer}
+                  getPlaceholder={'Performer'}
+                  required
+                  className={s['style-input']}
+                  getType={'text'}
+                  value={inputPerformer}
                 />
+                <Select
+                  value={editIsOpen ? selectGenre.title : ''}
+                  changeGenre={changeGenre}
+                />
+                <input
+                  onChange={changeYear}
+                  placeholder={'Year'}
+                  required
+                  className={s['style-input']}
+                  type={'number'}
+                  value={inputYear}
+                ></input>
               </>
             )}
           </fieldset>
@@ -164,7 +193,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
             {!menuIsOpen ? (
               <Button
                 onClickHandler={() => {
-                  deleteMusicOnClick(id);
+                  deleteMusicOnClick(selectedMusicId === id ? id : selectedMusicId);
                 }}
                 title="Delete"
               />
@@ -172,7 +201,9 @@ const ModalWindow: FC<ModalWindowItems> = ({
               ''
             )}
             <Button
-              onClickHandler={() => menuIsOpen && addTaskHandler()}
+              onClickHandler={() =>
+                menuIsOpen ? addTaskHandler(newMusic) : ''
+              }
               title="Save"
             />
           </div>

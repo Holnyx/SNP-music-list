@@ -2,27 +2,35 @@ import React, { Dispatch, FC, memo, SetStateAction } from 'react';
 
 import s from './MusicItem.module.sass';
 import cx from 'classnames';
+import ModalWindow from '../ModalWindow/ModalWindow';
+import { GenresItems } from '@/store/types';
 
 type MusicItemItems = {
   name: string;
   performer: string;
+  genre: GenresItems;
+  year: number
   infoIsOpen: boolean;
   setInfoIsOpen: Dispatch<SetStateAction<boolean>>;
   editIsOpen: boolean;
   setEditIsOpen: Dispatch<SetStateAction<boolean>>;
   id: string;
   checked: boolean;
+  onClickInfo: () => void;
 };
 
 const MusicItem: FC<MusicItemItems> = ({
   name,
   performer,
+  genre,
+  year,
   infoIsOpen,
   setInfoIsOpen,
   editIsOpen,
   setEditIsOpen,
   id,
   checked,
+  onClickInfo,
 }) => {
   return (
     <div
@@ -59,7 +67,9 @@ const MusicItem: FC<MusicItemItems> = ({
           <button
             id={id}
             className={s.button}
-            onClick={() => setInfoIsOpen(!infoIsOpen)}
+            onClick={() => {
+              setInfoIsOpen(!infoIsOpen), onClickInfo();
+            }}
           >
             Info
           </button>
@@ -74,6 +84,23 @@ const MusicItem: FC<MusicItemItems> = ({
           </button>
         </div>
       </div>
+      {/* <ModalWindow
+        id={''}
+        menuIsOpen={false}
+        setMenuIsOpen={}
+        infoIsOpen={false}
+        setInfoIsOpen={}
+        editIsOpen={false}
+        setEditIsOpen={}
+        deleteMusicOnClick={}
+        checked={false}
+        setChecked={}
+        name={name}
+        performer={performer}
+        genre={genre}
+        year={year}
+        selectedMusicId={''}
+      /> */}
     </div>
   );
 };

@@ -1,93 +1,53 @@
-import React, {
-  ChangeEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useId,
-  useState,
-} from 'react';
+import React, { memo, useCallback, useEffect, useId, useState } from 'react';
 
 import Header from '@/components/commons/Header/Header';
-import SearchInput from '@/components/commons/SearchInput/SearchInput';
 import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
 import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
-
-import { GenresItems } from '@/components/state/genresItems';
 
 import s from './HomePage.module.sass';
 import cx from 'classnames';
 import MusicItem from '@/components/commons/MusicItem/MusicItem';
 import { MusicItems } from '@/store/types';
 import { useActionWithPayload } from '@/hooks/hooks';
-import { addMusicAC, InitTodosFromStorageAC, removeMusicAC } from '@/store/actions';
+import { InitMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { musicListSelector, musicSelector } from '@/store/selectors';
+import { v1 } from 'uuid';
 
 const HomePage = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [infoIsOpen, setInfoIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
   const [checked, setChecked] = useState(false);
-  const id = useId();
+  const id = v1();
   const dispatch = useDispatch();
   const allMusics = useSelector(musicSelector);
-  // const [list, setList] = useState<MusicItems[]>([
-  //   {
-  //     id,
-  //     name: 'Woh pehli dafa',
-  //     performer: 'DZ Messiliazazaz',
-  //     genre: {
-  //       value: '1',
-  //       title: 'Blues',
-  //     },
-
-  //     year: 2024,
-  //   },
-  //   {
-  //     id,
-  //     name: 'Woh pehli dafa',
-  //     performer: 'DZ Messiliazazaz',
-  //     genre: {
-  //       value: '1',
-  //       title: 'Blues',
-  //     },
-
-  //     year: 2024,
-  //   },
-  // ]);
+  const filteredMusics = useSelector(musicListSelector);
 
   useEffect(() => {
-    const storedTasks = localStorage.getItem('musics');
-    if (storedTasks) {
-      const parsedTasks = JSON.parse(storedTasks);
-      dispatch(InitTodosFromStorageAC(parsedTasks));
+    const storedMusics = localStorage.getItem('musics');
+    if (storedMusics) {
+      const parsedMusics = JSON.parse(storedMusics);
+      dispatch(InitMusicsFromStorageAC(parsedMusics));
     }
   }, [dispatch]);
 
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {
       localStorage.setItem('musics', JSON.stringify(allMusics));
-    } else {
-      localStorage.removeItem('musics');
     }
   }, [allMusics]);
 
-  const filteredMusics = useSelector(musicListSelector);
-
-  const removeTaskAction = useActionWithPayload(removeMusicAC);
-  const removeTask = useCallback((id: string) => {
-    removeTaskAction({ musicId: id });
+  const removeMusicAction = useActionWithPayload(removeMusicAC);
+  const removeMusic = useCallback((id: string) => {
+    removeMusicAction({ musicId: id });
   }, []);
 
-  // const addMusic = (music: MusicItems) => {
-  //   setList([...list, music]);
-  //   setMenuIsOpen(false)
-  // };
+  const [selectedMusicId, setSelectedMusicId] = useState<string>('');
+  const openInfoModal = (id: string) => {
+    setSelectedMusicId(id);
+  };
 
-  // const deleteMusic = (id: string) => {
-  //   setList(list.filter(element => element.id !== id));
-  //   setEditIsOpen(false)
-  // };
 
   return (
     <div className={s.container}>
@@ -95,7 +55,6 @@ const HomePage = () => {
         menuIsOpen={menuIsOpen}
         setMenuIsOpen={setMenuIsOpen}
       />
-      <SearchInput />
       <FilterGenres />
       <div className={s.container_music}>
         {filteredMusics.map((element, i) => {
@@ -106,16 +65,20 @@ const HomePage = () => {
               id={element.id}
               name={element.name}
               performer={element.performer}
+              genre={element.genre}
+              year={element.year}
               infoIsOpen={infoIsOpen}
               setInfoIsOpen={setInfoIsOpen}
               editIsOpen={editIsOpen}
               setEditIsOpen={setEditIsOpen}
+              onClickInfo={() => openInfoModal(element.id)}
+              // onEditClick={() => openEditMusicModal(element)}
             />
           );
         })}
       </div>
       <ModalWindow
-        id={'1'}
+        id={id}
         checked={checked}
         setChecked={setChecked}
         menuIsOpen={menuIsOpen}
@@ -124,7 +87,12 @@ const HomePage = () => {
         setInfoIsOpen={setInfoIsOpen}
         editIsOpen={editIsOpen}
         setEditIsOpen={setEditIsOpen}
-        deleteMusicOnClick={removeTask}
+        deleteMusicOnClick={removeMusic}
+        name={''}
+        performer={''}
+        genre={{ value: '', title: '' }}
+        year={Number()}
+        selectedMusicId={selectedMusicId}
       />
     </div>
   );

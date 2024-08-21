@@ -6,9 +6,10 @@ import { genresItems } from '@/store/types';
 
 type SelectItems = {
   value: string;
+  changeGenre: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
-const Select: FC<SelectItems> = ({ value }) => {
+const Select: FC<SelectItems> = ({ value, changeGenre }) => {
   const [select, setSelect] = useState(value);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -30,7 +31,7 @@ const Select: FC<SelectItems> = ({ value }) => {
         name="genre"
         id="genre"
         className={selectPlaceholder}
-        onChange={handleChange}
+        onChange={changeGenre}
       >
         {genresItems.map((element, i) => (
           <option

@@ -2,19 +2,7 @@ import { MusicState } from './types';
 import { Actions } from './actions';
 
 const initialState: MusicState = {
-  musicList: [
-    {
-      id: '1',
-      name: 'Woh pehli dafa',
-      performer: 'DZ Messiliazazaz',
-      genre: {
-        value: '1',
-        title: 'Blues',
-      },
-
-      year: 2024,
-    },
-  ],
+  musicList: [],
   activeFilter: 'All',
 };
 
@@ -39,6 +27,9 @@ const musicReducer = (
     }
     case 'CHANGE-FILTER': {
       return { ...state, activeFilter: action.payload };
+    }
+    case 'INIT-MUSICS-FROM-STORAGE': {
+      return { ...state, musicList: action.payload };
     }
     default:
       return state;
