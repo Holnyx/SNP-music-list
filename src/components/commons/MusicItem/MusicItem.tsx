@@ -9,7 +9,7 @@ type MusicItemItems = {
   name: string;
   performer: string;
   genre: GenresItems;
-  year: number
+  year: number;
   infoIsOpen: boolean;
   setInfoIsOpen: Dispatch<SetStateAction<boolean>>;
   editIsOpen: boolean;
@@ -77,30 +77,13 @@ const MusicItem: FC<MusicItemItems> = ({
             id={id}
             className={s.button}
             onClick={() => {
-              setEditIsOpen(!editIsOpen);
+              setEditIsOpen(!editIsOpen), onClickInfo();
             }}
           >
             Edit
           </button>
         </div>
       </div>
-      {/* <ModalWindow
-        id={''}
-        menuIsOpen={false}
-        setMenuIsOpen={}
-        infoIsOpen={false}
-        setInfoIsOpen={}
-        editIsOpen={false}
-        setEditIsOpen={}
-        deleteMusicOnClick={}
-        checked={false}
-        setChecked={}
-        name={name}
-        performer={performer}
-        genre={genre}
-        year={year}
-        selectedMusicId={''}
-      /> */}
     </div>
   );
 };

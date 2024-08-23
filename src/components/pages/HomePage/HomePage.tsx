@@ -18,6 +18,7 @@ const HomePage = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [infoIsOpen, setInfoIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
+  const [selectedMusicId, setSelectedMusicId] = useState<string>('');
   const [checked, setChecked] = useState(false);
   const id = v1();
   const dispatch = useDispatch();
@@ -39,11 +40,11 @@ const HomePage = () => {
   }, [allMusics]);
 
   const removeMusicAction = useActionWithPayload(removeMusicAC);
-  const removeMusic = useCallback((id: string) => {
-    removeMusicAction({ musicId: id });
+  const removeMusic = useCallback((musicId: string) => {
+    removeMusicAction({ musicId });  
   }, []);
 
-  const [selectedMusicId, setSelectedMusicId] = useState<string>('');
+
   const openInfoModal = (id: string) => {
     setSelectedMusicId(id);
   };

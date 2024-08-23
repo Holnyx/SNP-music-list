@@ -51,7 +51,6 @@ const ModalWindow: FC<ModalWindowItems> = ({
   deleteMusicOnClick,
   name,
   performer,
-  genre,
   year,
   selectedMusicId,
 }) => {
@@ -146,13 +145,13 @@ const ModalWindow: FC<ModalWindowItems> = ({
             {infoIsOpen && selectedMusicId && selectedMusic ? (
               <>
                 <span className={s.label}>Name</span>
-                <h6>{inputName}</h6>
+                <h6>{selectedMusic.name}</h6>
                 <span className={s.label}>Performer</span>
-                <h6>{inputPerformer}</h6>
+                <h6>{selectedMusic.performer}</h6>
                 <span className={s.label}>Genre</span>
-                <h6>{selectGenre.title}</h6>
+                <h6>{selectedMusic.genre.title}</h6>
                 <span className={s.label}>Year</span>
-                <h6>{inputYear}</h6>
+                <h6>{selectedMusic.year}</h6>
               </>
             ) : (
               <>
@@ -162,7 +161,9 @@ const ModalWindow: FC<ModalWindowItems> = ({
                   required
                   className={s['style-input']}
                   getType={'text'}
-                  value={inputName}
+                  value={
+                    editIsOpen && selectedMusic ? selectedMusic.name : inputName
+                  }
                 />
                 <Input
                   onChange={setInputPerformer}
@@ -170,11 +171,12 @@ const ModalWindow: FC<ModalWindowItems> = ({
                   required
                   className={s['style-input']}
                   getType={'text'}
-                  value={inputPerformer}
+                  value={ editIsOpen && selectedMusic ? selectedMusic.performer : inputPerformer}
                 />
                 <Select
-                  value={editIsOpen ? selectGenre.title : ''}
+                  value={ editIsOpen && selectedMusic ? selectedMusic.genre.title : selectGenre.title}
                   changeGenre={changeGenre}
+                  selectGenre={selectGenre}
                 />
                 <input
                   onChange={changeYear}
@@ -182,7 +184,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
                   required
                   className={s['style-input']}
                   type={'number'}
-                  value={inputYear}
+                  value={ editIsOpen && selectedMusic ? selectedMusic.year : inputYear}
                 ></input>
               </>
             )}
@@ -193,7 +195,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
             {!menuIsOpen ? (
               <Button
                 onClickHandler={() => {
-                  deleteMusicOnClick(selectedMusicId === id ? id : selectedMusicId);
+                  deleteMusicOnClick(id);
                 }}
                 title="Delete"
               />

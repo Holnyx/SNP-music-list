@@ -2,11 +2,12 @@ import React, { ChangeEvent, FC, memo, useState } from 'react';
 
 import s from './Select.module.sass';
 import cx from 'classnames';
-import { genresItems } from '@/store/types';
+import { GenresItems, genresItems } from '@/store/types';
 
 type SelectItems = {
   value: string;
   changeGenre: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  selectGenre: GenresItems
 };
 
 const Select: FC<SelectItems> = ({ value, changeGenre }) => {
