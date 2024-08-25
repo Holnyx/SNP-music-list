@@ -1,3 +1,29 @@
+@import '../../../styles/mixins'
+
+.style-input
+    width: 350px
+    padding: 16px
+    color: #f90
+    font-weight: 100
+    font-size: 24px
+    line-height: 92%
+    background: #363531
+    border: 1px solid #f90
+    border-radius: 6px
+    font-family: "Heebo"
+
+    &::placeholder
+        color: #6c6c6c
+
+    @include mobile
+        width: 120px
+        padding: 6px
+        font-size: 14px
+
+    &[type="number"]::-webkit-inner-spin-button
+        height: 0
+        opacity: 0
+        -webkit-appearance: none
 .style
     width: 390px
     padding: 16px

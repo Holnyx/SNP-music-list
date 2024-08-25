@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { Dispatch, FC, memo, SetStateAction, useState } from 'react';
+import ModalWindow from '../ModalWindow/ModalWindow';
 
 import s from './Header.module.sass';
 import cx from 'classnames';
+import SearchInput from '../SearchInput/SearchInput';
 
-const Header = () => {
+type HeaderItems = {
+  menuIsOpen: boolean;
+  setMenuIsOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+const Header: FC<HeaderItems> = ({ menuIsOpen, setMenuIsOpen }) => {
   return (
     <div className={s.header}>
-      <button className={s.button}>
+      <button
+        className={s.button}
+        onClick={() => setMenuIsOpen(!menuIsOpen)}
+      >
         <svg
           width="34"
           height="34"
@@ -41,8 +51,9 @@ const Header = () => {
           </defs>
         </svg>
       </button>
+      <SearchInput />
     </div>
   );
 };
 
-export default Header;
+export default memo(Header);

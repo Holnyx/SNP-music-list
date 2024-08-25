@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import s from './SearchInput.module.sass';
 import cx from 'classnames';
@@ -33,4 +33,4 @@ const SearchInput = () => {
   );
 };
 
-export default SearchInput;
+export default memo(SearchInput);

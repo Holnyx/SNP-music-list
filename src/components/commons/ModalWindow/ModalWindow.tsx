@@ -1,15 +1,126 @@
-import React from 'react';
+import React, {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  memo,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+
+import Input from '../Input/Input';
+import AddImageInput from '../Input/AddImageInput/AddImageInput';
+import Button from '../Buttons/Button/Button';
 
 import s from './ModalWindow.module.sass';
 import cx from 'classnames';
-import Input from '../Input/Input';
-import CheckBox from '../CheckBox/Checkbox';
+import { genresItems, GenresItems, MusicItems } from '@/store/types';
+import Select from '../Select/Select';
+import { useActionWithPayload } from '@/hooks/hooks';
+import { addMusicAC } from '@/store/actions';
+import { useSelector } from 'react-redux';
+import { musicSelector } from '@/store/selectors';
 
-const ModalWindow = () => {
+type ModalWindowItems = {
+  id: string;
+  menuIsOpen: boolean;
+  setMenuIsOpen: Dispatch<SetStateAction<boolean>>;
+  infoIsOpen: boolean;
+  setInfoIsOpen: Dispatch<SetStateAction<boolean>>;
+  editIsOpen: boolean;
+  setEditIsOpen: Dispatch<SetStateAction<boolean>>;
+  deleteMusicOnClick: (id: string) => void;
+  checked: boolean;
+  setChecked: Dispatch<SetStateAction<boolean>>;
+  name: string;
+  performer: string;
+  genre: GenresItems;
+  year: number;
+  selectedMusicId: string;
+};
+
+const ModalWindow: FC<ModalWindowItems> = ({
+  id,
+  menuIsOpen,
+  setMenuIsOpen,
+  infoIsOpen,
+  setInfoIsOpen,
+  editIsOpen,
+  setEditIsOpen,
+  deleteMusicOnClick,
+  name,
+  performer,
+  year,
+  selectedMusicId,
+}) => {
+  const [inputName, setInputName] = useState(name);
+  const [inputPerformer, setInputPerformer] = useState(performer);
+  const [selectGenre, setSelectGenre] = useState(genresItems[0]);
+  const [inputYear, setInputYear] = useState(year);
+
+  const closeModalWindow = () => {
+    setMenuIsOpen(false);
+    setInfoIsOpen(false);
+    setEditIsOpen(false);
+  };
+  const allMusics = useSelector(musicSelector);
+
+  const addMusicAction = useActionWithPayload(addMusicAC);
+
+  const newMusic: MusicItems = {
+    id: id,
+    name: inputName,
+    performer: inputPerformer,
+    genre: selectGenre,
+    year: inputYear,
+  };
+
+  const addTaskHandler = useCallback((music: MusicItems) => {
+    addMusicAction({ music: music });
+    closeModalWindow();
+  }, []);
+
+  const showModalWindow = cx(s.container, {
+    [s.active]: menuIsOpen || infoIsOpen || editIsOpen,
+  });
+
+  const addMusic = cx(s.buttons_box, { [s.add_music]: menuIsOpen });
+  const infoMusic = cx(s.window, { [s.info]: infoIsOpen });
+
+  const changeGenre = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.currentTarget.value;
+    const selectedGenre = genresItems.find(
+      genre => genre.value === selectedValue
+    );
+    if (selectedGenre) {
+      setSelectGenre(selectedGenre);
+    }
+  };
+
+  const changeYear = (e: ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(e.currentTarget.value, 10);
+    if (!isNaN(newValue)) {
+      setInputYear(newValue);
+    }
+  };
+
+  const selectedMusic = allMusics.find(music => music.id === selectedMusicId);
+
   return (
-    <div className={s.container}>
-      <div className={s.window}>
-        <button className={s.closed} title='Cancel'>
+    <div
+      className={showModalWindow}
+      onClick={closeModalWindow}
+    >
+      <div
+        className={infoMusic}
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          className={s.closed}
+          title="Cancel"
+          onClick={closeModalWindow}
+        >
           <svg
             width="27"
             height="27"
@@ -23,55 +134,87 @@ const ModalWindow = () => {
             />
           </svg>
         </button>
-        <h2 className={s.title}>Add new music</h2>
+        <h2 className={s.title}>
+          {infoIsOpen ? 'Info Music' : 'Add new music'}
+        </h2>
         <form className={s.form}>
           <fieldset className={s.add_images_box}>
-            <label
-              htmlFor="image-uploads"
-              className={s.add_image}
-              title='Click for add cover for your track'
-            >
-              +
-            </label>
-            <input
-              type={'file'}
-              className={s.uploads}
-              accept={'.jpg, .jpeg, .png'}
-              id={'image-uploads'}
-            />
-            <CheckBox label="Without cover" />
+            <AddImageInput />
           </fieldset>
           <fieldset className={s.fieldset}>
-            <Input
-              getType={'text'}
-              getPlaceholder={'Name'}
-            />
-            <Input
-              getType={'text'}
-              getPlaceholder={'Performer'}
-            />
-            <select
-              name="genre"
-              id="genre"
-              className={s.genre}
-            >
-              <option value="Blues">Blues</option>
-            </select>
-            <Input
-              getType={'number'}
-              getPlaceholder={'Year'}
-              max="2024"
-              required={true}
-            />
+            {infoIsOpen && selectedMusicId && selectedMusic ? (
+              <>
+                <span className={s.label}>Name</span>
+                <h6>{selectedMusic.name}</h6>
+                <span className={s.label}>Performer</span>
+                <h6>{selectedMusic.performer}</h6>
+                <span className={s.label}>Genre</span>
+                <h6>{selectedMusic.genre.title}</h6>
+                <span className={s.label}>Year</span>
+                <h6>{selectedMusic.year}</h6>
+              </>
+            ) : (
+              <>
+                <Input
+                  onChange={setInputName}
+                  getPlaceholder={'Name'}
+                  required
+                  className={s['style-input']}
+                  getType={'text'}
+                  value={
+                    editIsOpen && selectedMusic ? selectedMusic.name : inputName
+                  }
+                />
+                <Input
+                  onChange={setInputPerformer}
+                  getPlaceholder={'Performer'}
+                  required
+                  className={s['style-input']}
+                  getType={'text'}
+                  value={ editIsOpen && selectedMusic ? selectedMusic.performer : inputPerformer}
+                />
+                <Select
+                  value={ editIsOpen && selectedMusic ? selectedMusic.genre.title : selectGenre.title}
+                  changeGenre={changeGenre}
+                  selectGenre={selectGenre}
+                />
+                <input
+                  onChange={changeYear}
+                  placeholder={'Year'}
+                  required
+                  className={s['style-input']}
+                  type={'number'}
+                  value={ editIsOpen && selectedMusic ? selectedMusic.year : inputYear}
+                ></input>
+              </>
+            )}
           </fieldset>
         </form>
-        <div className={s.buttons_box}>
-          <button className={s.delete}>Delete</button>
-          <button className={s.save}>Save</button>
-        </div>
+        {!infoIsOpen ? (
+          <div className={addMusic}>
+            {!menuIsOpen ? (
+              <Button
+                onClickHandler={() => {
+                  deleteMusicOnClick(id);
+                }}
+                title="Delete"
+              />
+            ) : (
+              ''
+            )}
+            <Button
+              onClickHandler={() =>
+                menuIsOpen ? addTaskHandler(newMusic) : ''
+              }
+              title="Save"
+            />
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );
 };
 
-export default ModalWindow;
+export default memo(ModalWindow);

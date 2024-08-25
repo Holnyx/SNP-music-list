@@ -1,7 +1,13 @@
-import "@/styles/reset.sass";
+import store from '@/store';
+import '@/styles/reset.sass';
 
-import type { AppProps } from "next/app";
+import type { AppProps } from 'next/app';
+import { Provider } from 'react-redux';
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
+  );
 }

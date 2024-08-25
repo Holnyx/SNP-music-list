@@ -1,0 +1,33 @@
+@import '../../../../styles/mixins'
+
+.add_image
+    display: flex
+    justify-content: center
+    width: 194px
+    height: 184px
+    padding-top: 10px
+    color: #f90
+    font-weight: 100
+    font-size: 148px
+    background: #363531
+    border: 1px solid #f90
+    border-radius: 6px
+    cursor: pointer
+
+    @include mobile
+        width: 124px
+        height: 114px
+        font-size: 85px
+
+.uploads[type="file"]
+    display: none
+
+.icon
+    width: 194px
+    height: 194px
+    border-radius: 6px
+    
+.add_image_checked
+    padding-top: 0
+    padding-bottom: 10px
+    cursor: default
