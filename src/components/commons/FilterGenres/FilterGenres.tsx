@@ -27,9 +27,11 @@ const FilterGenres = () => {
           <button
             key={i}
             className={cx(s['button'], {
-              [s['btn-focus']]: filter ===  item.title,
+              [s['btn-focus']]: filter === item.title,
             })}
-            onClick={() => changeTodoListFilter(item.title as FilterMusicValues)}
+            onClick={() =>
+              changeTodoListFilter(item.title as FilterMusicValues)
+            }
           >
             {item.title}
           </button>
