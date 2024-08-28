@@ -1,11 +1,13 @@
+@import '../../../styles/mixins'
+
 .container
     position: relative
     display: flex
     justify-content: center
     max-width: 696px
     width: 100%
-    height: 66px
-    // margin-bottom: 33px
+    padding: 0 15px
+    margin-left: 68px
 
 .input
     position: relative
@@ -23,10 +25,20 @@
     box-shadow: 0 0 52px 0 rgba(0, 0, 0, 0.25)
     box-sizing: border-box
 
+    @include mobile
+        padding: 0 0 0 46px
+        font-size: 12px
+        height: 55px
+
 .icon
     position: absolute
     z-index: 2
     top: 25px
-    left: 35px
+    left: 45px
     display: flex
     justify-content: flex-start
+
+    @include mobile
+        width: 15px
+        top: 18px
+        left: 32px

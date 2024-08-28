@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, memo, useEffect, useState } from 'react';
 
 import s from './AddImageInput.module.sass';
 import cx from 'classnames';
@@ -44,4 +44,4 @@ const AddImageInput = () => {
   );
 };
 
-export default AddImageInput;
+export default memo(AddImageInput);

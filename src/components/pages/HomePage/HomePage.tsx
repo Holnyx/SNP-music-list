@@ -1,18 +1,17 @@
 import React, { memo, useCallback, useEffect, useId, useState } from 'react';
+import { v1 } from 'uuid';
 
 import Header from '@/components/commons/Header/Header';
 import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
 import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
-
-import s from './HomePage.module.sass';
-import cx from 'classnames';
 import MusicItem from '@/components/commons/MusicItem/MusicItem';
-import { MusicItems } from '@/store/types';
 import { useActionWithPayload } from '@/hooks/hooks';
 import { InitMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { musicListSelector, musicSelector } from '@/store/selectors';
-import { v1 } from 'uuid';
+
+import s from './HomePage.module.sass';
+import cx from 'classnames';
 
 const HomePage = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -20,8 +19,9 @@ const HomePage = () => {
   const [editIsOpen, setEditIsOpen] = useState(false);
   const [selectedMusicId, setSelectedMusicId] = useState<string>('');
   const [checked, setChecked] = useState(false);
-  const id = v1();
+
   const dispatch = useDispatch();
+  const id = v1();
   const allMusics = useSelector(musicSelector);
   const filteredMusics = useSelector(musicListSelector);
 
@@ -36,19 +36,19 @@ const HomePage = () => {
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {
       localStorage.setItem('musics', JSON.stringify(allMusics));
+    } else {
+      localStorage.removeItem('musics');
     }
   }, [allMusics]);
 
   const removeMusicAction = useActionWithPayload(removeMusicAC);
   const removeMusic = useCallback((musicId: string) => {
-    removeMusicAction({ musicId });  
+    removeMusicAction({ musicId });
   }, []);
-
 
   const openInfoModal = (id: string) => {
     setSelectedMusicId(id);
   };
-
 
   return (
     <div className={s.container}>
@@ -61,13 +61,12 @@ const HomePage = () => {
         {filteredMusics.map((element, i) => {
           return (
             <MusicItem
+              removeMusic={removeMusic}
               checked={checked}
               key={i}
               id={element.id}
               name={element.name}
               performer={element.performer}
-              genre={element.genre}
-              year={element.year}
               infoIsOpen={infoIsOpen}
               setInfoIsOpen={setInfoIsOpen}
               editIsOpen={editIsOpen}

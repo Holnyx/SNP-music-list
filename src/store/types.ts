@@ -5,7 +5,7 @@ export type MusicItems = {
   name: string;
   performer: string;
   genre: GenresItems;
-  year: number;
+  year: string | number;
 };
 
 export type MusicState = {
@@ -36,7 +36,7 @@ export type GenresItems = {
 };
 
 export const genresItems: GenresItems[] = [
-  { value: '1', title: 'Choose genre', disabled: true },
+  { value: '1', title: 'Choose genre *', disabled: true },
   { value: '2', title: 'Blues' },
   { value: '3', title: 'Classical' },
   { value: '4', title: 'Country' },

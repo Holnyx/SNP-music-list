@@ -166,7 +166,9 @@
 
 .add_music
     justify-content: end
+
 .style-input
+    position: relative
     width: 350px
     padding: 16px
     color: #f90
@@ -181,6 +183,12 @@
     &::placeholder
         color: #6c6c6c
 
+    &:focus-visible
+        outline: none
+        border: 1px solid #ff3402
+        box-shadow: 0 0 5px #ff3402
+        transition: box-shadow 0.5s ease
+
     @include mobile
         width: 120px
         padding: 6px
@@ -190,3 +198,18 @@
         height: 0
         opacity: 0
         -webkit-appearance: none
+
+.error-message
+    position: absolute
+    color: #ff3402
+    font-family: "Heebo"
+    font-weight: 200
+
+.error-message-name
+    top: 204px
+
+.error-message-performer
+    top: 320px
+
+.error-message-genre
+    bottom: 215px

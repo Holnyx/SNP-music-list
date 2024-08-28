@@ -10,7 +10,7 @@ export type AddMusic = {
   payload: { music: MusicItems };
 };
 
-export type ChangeTodolistFilter = {
+export type ChangeMusicsFilter = {
   type: 'CHANGE-FILTER';
   payload: FilterMusicValues;
 };
@@ -23,7 +23,7 @@ export type InitMusicsFromStorage = {
 export type Actions =
   | RemoveMusic
   | AddMusic
-  | ChangeTodolistFilter
+  | ChangeMusicsFilter
   | InitMusicsFromStorage;
 
 export const removeMusicAC = (payload: { musicId: string }): RemoveMusic => {
@@ -40,9 +40,9 @@ export const addMusicAC = (payload: { music: MusicItems }): AddMusic => {
   };
 };
 
-export const changeTodolistFilterAC = (
+export const changeMusicsFilterAC = (
   filter: FilterMusicValues
-): ChangeTodolistFilter => {
+): ChangeMusicsFilter => {
   return {
     type: 'CHANGE-FILTER',
     payload: filter,

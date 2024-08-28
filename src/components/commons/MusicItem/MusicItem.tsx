@@ -8,8 +8,6 @@ import { GenresItems } from '@/store/types';
 type MusicItemItems = {
   name: string;
   performer: string;
-  genre: GenresItems;
-  year: number;
   infoIsOpen: boolean;
   setInfoIsOpen: Dispatch<SetStateAction<boolean>>;
   editIsOpen: boolean;
@@ -17,13 +15,12 @@ type MusicItemItems = {
   id: string;
   checked: boolean;
   onClickInfo: () => void;
+  removeMusic: (musicID: string) => void;
 };
 
 const MusicItem: FC<MusicItemItems> = ({
   name,
   performer,
-  genre,
-  year,
   infoIsOpen,
   setInfoIsOpen,
   editIsOpen,
@@ -31,12 +28,32 @@ const MusicItem: FC<MusicItemItems> = ({
   id,
   checked,
   onClickInfo,
+  removeMusic,
 }) => {
   return (
     <div
       className={s.item}
       id={id}
     >
+      <button
+        className={s.closed}
+        title="Cancel"
+        onClick={() => removeMusic(id)}
+      >
+        {' '}
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 27 27"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6.74367 7.21198L19.573 19.8808L20.2458 19.1994L7.41646 6.53066L6.74367 7.21198ZM6.5418 19.784L7.24883 20.4822L20.7046 6.85577L19.9976 6.15759L6.5418 19.784Z"
+            fill="#FF9900"
+          />
+        </svg>
+      </button>
       {!checked ? (
         <svg
           className={s.icon}

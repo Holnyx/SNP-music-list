@@ -15,6 +15,12 @@
     cursor: pointer
     appearance: none
 
+    &:focus-visible
+        outline: none
+        border: 1px solid #ff3402
+        box-shadow: 0 0 5px #ff3402
+        transition: box-shadow 0.5s ease
+
     @include mobile
         width: 134px
         height: 34.5px

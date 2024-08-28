@@ -1,4 +1,7 @@
+@import '../../../styles/mixins'
+
 .item
+    position: relative
     display: flex
     flex-direction: column
     gap: 15px
@@ -52,3 +55,16 @@
         &:active
             background-color: #f90
             color: #1b1a1a
+
+.closed
+    position: absolute
+    right: -7px
+    top: -7px
+    display: flex
+    justify-content: center
+    padding: 3px
+    color: #f90
+    background: #363531
+    border: none
+    border-radius: 50%
+    cursor: pointer

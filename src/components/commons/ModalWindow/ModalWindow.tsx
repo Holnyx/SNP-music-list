@@ -5,22 +5,22 @@ import React, {
   memo,
   SetStateAction,
   useCallback,
-  useEffect,
   useState,
 } from 'react';
 
 import Input from '../Input/Input';
 import AddImageInput from '../Input/AddImageInput/AddImageInput';
 import Button from '../Buttons/Button/Button';
-
-import s from './ModalWindow.module.sass';
-import cx from 'classnames';
-import { genresItems, GenresItems, MusicItems } from '@/store/types';
 import Select from '../Select/Select';
+
+import { genresItems, GenresItems, MusicItems } from '@/store/types';
 import { useActionWithPayload } from '@/hooks/hooks';
 import { addMusicAC } from '@/store/actions';
 import { useSelector } from 'react-redux';
 import { musicSelector } from '@/store/selectors';
+
+import s from './ModalWindow.module.sass';
+import cx from 'classnames';
 
 type ModalWindowItems = {
   id: string;
@@ -36,7 +36,7 @@ type ModalWindowItems = {
   name: string;
   performer: string;
   genre: GenresItems;
-  year: number;
+  year: string | number;
   selectedMusicId: string;
 };
 
@@ -57,12 +57,22 @@ const ModalWindow: FC<ModalWindowItems> = ({
   const [inputName, setInputName] = useState(name);
   const [inputPerformer, setInputPerformer] = useState(performer);
   const [selectGenre, setSelectGenre] = useState(genresItems[0]);
-  const [inputYear, setInputYear] = useState(year);
+  const [inputYear, setInputYear] = useState(+year || '');
+  const [error, setError] = useState(false);
+
+  const clearInputs = () => {
+    setInputName('');
+    setInputPerformer('');
+    setSelectGenre(genresItems[0]);
+    setInputYear('');
+  };
 
   const closeModalWindow = () => {
     setMenuIsOpen(false);
     setInfoIsOpen(false);
     setEditIsOpen(false);
+    clearInputs();
+    setError(false);
   };
   const allMusics = useSelector(musicSelector);
 
@@ -76,10 +86,24 @@ const ModalWindow: FC<ModalWindowItems> = ({
     year: inputYear,
   };
 
-  const addTaskHandler = useCallback((music: MusicItems) => {
-    addMusicAction({ music: music });
-    closeModalWindow();
-  }, []);
+  const addMusicHandler = useCallback(
+    (music: MusicItems) => {
+      if (
+        inputName.length &&
+        inputPerformer.length > 1 &&
+        inputName.trim() !== '' &&
+        inputPerformer.trim() !== '' &&
+        selectGenre !== genresItems[0]
+      ) {
+        addMusicAction({ music });
+        closeModalWindow();
+        clearInputs();
+      } else {
+        setError(true);
+      }
+    },
+    [inputName, inputPerformer, selectGenre, inputYear, addMusicAction]
+  );
 
   const showModalWindow = cx(s.container, {
     [s.active]: menuIsOpen || infoIsOpen || editIsOpen,
@@ -88,19 +112,9 @@ const ModalWindow: FC<ModalWindowItems> = ({
   const addMusic = cx(s.buttons_box, { [s.add_music]: menuIsOpen });
   const infoMusic = cx(s.window, { [s.info]: infoIsOpen });
 
-  const changeGenre = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.currentTarget.value;
-    const selectedGenre = genresItems.find(
-      genre => genre.value === selectedValue
-    );
-    if (selectedGenre) {
-      setSelectGenre(selectedGenre);
-    }
-  };
-
   const changeYear = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseInt(e.currentTarget.value, 10);
-    if (!isNaN(newValue)) {
+    const newValue = parseInt(e.currentTarget.value);
+    if (!isNaN(newValue) && newValue <= 2024) {
       setInputYear(newValue);
     }
   };
@@ -150,14 +164,20 @@ const ModalWindow: FC<ModalWindowItems> = ({
                 <h6>{selectedMusic.performer}</h6>
                 <span className={s.label}>Genre</span>
                 <h6>{selectedMusic.genre.title}</h6>
-                <span className={s.label}>Year</span>
-                <h6>{selectedMusic.year}</h6>
+
+                {selectedMusic.year && (
+                  <>
+                    {' '}
+                    <span className={s.label}>Year</span>
+                    <h6>{selectedMusic.year}</h6>
+                  </>
+                )}
               </>
             ) : (
               <>
                 <Input
                   onChange={setInputName}
-                  getPlaceholder={'Name'}
+                  getPlaceholder={'Name *'}
                   required
                   className={s['style-input']}
                   getType={'text'}
@@ -165,26 +185,63 @@ const ModalWindow: FC<ModalWindowItems> = ({
                     editIsOpen && selectedMusic ? selectedMusic.name : inputName
                   }
                 />
+                {error && inputName.length <= 1 ? (
+                  <span
+                    className={cx(s['error-message'], s['error-message-name'])}
+                  >
+                    The name must contain more than one character
+                  </span>
+                ) : (
+                  ''
+                )}
                 <Input
                   onChange={setInputPerformer}
-                  getPlaceholder={'Performer'}
+                  getPlaceholder={'Performer *'}
                   required
                   className={s['style-input']}
                   getType={'text'}
-                  value={ editIsOpen && selectedMusic ? selectedMusic.performer : inputPerformer}
+                  value={
+                    editIsOpen && selectedMusic
+                      ? selectedMusic.performer
+                      : inputPerformer
+                  }
                 />
+                {error && inputPerformer.length <= 1 ? (
+                  <span
+                    className={cx(
+                      s['error-message'],
+                      s['error-message-performer']
+                    )}
+                  >
+                    The performer must contain more than one character
+                  </span>
+                ) : (
+                  ''
+                )}
                 <Select
-                  value={ editIsOpen && selectedMusic ? selectedMusic.genre.title : selectGenre.title}
-                  changeGenre={changeGenre}
+                  setSelectGenre={setSelectGenre}
                   selectGenre={selectGenre}
                 />
+                {error && selectGenre.disabled ? (
+                  <span
+                    className={cx(s['error-message'], s['error-message-genre'])}
+                  >
+                    You must select a genre
+                  </span>
+                ) : (
+                  ''
+                )}
                 <input
+                  min="1000"
+                  max="2024"
                   onChange={changeYear}
                   placeholder={'Year'}
                   required
                   className={s['style-input']}
                   type={'number'}
-                  value={ editIsOpen && selectedMusic ? selectedMusic.year : inputYear}
+                  value={
+                    editIsOpen && selectedMusic ? selectedMusic.year : inputYear
+                  }
                 ></input>
               </>
             )}
@@ -195,7 +252,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
             {!menuIsOpen ? (
               <Button
                 onClickHandler={() => {
-                  deleteMusicOnClick(id);
+                  deleteMusicOnClick(selectedMusicId), closeModalWindow();
                 }}
                 title="Delete"
               />
@@ -204,7 +261,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
             )}
             <Button
               onClickHandler={() =>
-                menuIsOpen ? addTaskHandler(newMusic) : ''
+                menuIsOpen ? addMusicHandler(newMusic) : ''
               }
               title="Save"
             />

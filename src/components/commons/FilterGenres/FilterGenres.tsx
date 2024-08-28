@@ -5,19 +5,19 @@ import { genresItems } from '@/components/state/genresItems';
 import s from './FilterGenres.module.sass';
 import cx from 'classnames';
 import { useActionWithPayload } from '@/hooks/hooks';
-import { changeTodolistFilterAC } from '@/store/actions';
+import { changeMusicsFilterAC } from '@/store/actions';
 import { FilterMusicValues } from '@/store/types';
 import { useSelector } from 'react-redux';
 import { musicFilterSelector } from '@/store/selectors';
 
 const FilterGenres = () => {
   const filter = useSelector(musicFilterSelector);
-  const changeTodolistFilterAction = useActionWithPayload(
-    changeTodolistFilterAC
+  const changeMusicsFilterAction = useActionWithPayload(
+    changeMusicsFilterAC
   );
 
-  const changeTodoListFilter = useCallback((filter: FilterMusicValues) => {
-    changeTodolistFilterAction(filter);
+  const changeMusicsFilter = useCallback((filter: FilterMusicValues) => {
+    changeMusicsFilterAction(filter);
   }, []);
   return (
     <div className={s.container}>
@@ -30,7 +30,7 @@ const FilterGenres = () => {
               [s['btn-focus']]: filter === item.title,
             })}
             onClick={() =>
-              changeTodoListFilter(item.title as FilterMusicValues)
+              changeMusicsFilter(item.title as FilterMusicValues)
             }
           >
             {item.title}
