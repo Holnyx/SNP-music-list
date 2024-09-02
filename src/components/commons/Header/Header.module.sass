@@ -1,5 +1,6 @@
 @import '../../../styles/mixins'
-    
+@import '../../../styles/color'
+
 .header
     position: fixed
     top: 0
@@ -22,5 +23,13 @@
     border: none
     cursor: pointer
 
+    .color
+        border-radius: 6px
+        background-color: transparent
+        transition: 0.5s background-color ease
+
+        &:hover
+            background-color: $color-orange-transparent
+
     @include mobile
-       left: 20px
+        left: 20px

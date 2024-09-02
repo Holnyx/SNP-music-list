@@ -1,4 +1,5 @@
 @import '../../../../styles/mixins'
+@import '../../../../styles/color'
 
 .add_image
     display: flex
@@ -6,11 +7,11 @@
     width: 194px
     height: 184px
     padding-top: 10px
-    color: #f90
+    color: $color-orange
     font-weight: 100
     font-size: 148px
-    background: #363531
-    border: 1px solid #f90
+    background: $color-gray
+    border: 1px solid $color-orange
     border-radius: 6px
     cursor: pointer
 
@@ -26,6 +27,9 @@
     width: 194px
     height: 194px
     border-radius: 6px
+
+    @include mobile
+        height: 124px
     
 .add_image_checked
     padding-top: 0

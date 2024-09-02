@@ -1,10 +1,13 @@
 import React, { ChangeEvent, FC, memo, useState } from 'react';
 
+import { GenresItems, genresItems, MusicItems } from '@/store/types';
+
 import s from './Select.module.sass';
 import cx from 'classnames';
-import { GenresItems, genresItems } from '@/store/types';
 
 type SelectItems = {
+  editIsOpen: boolean;
+  selectedMusic: MusicItems | undefined;
   selectGenre: GenresItems;
   setSelectGenre: React.Dispatch<React.SetStateAction<GenresItems>>;
 };
@@ -30,7 +33,7 @@ const Select: FC<SelectItems> = ({ selectGenre, setSelectGenre }) => {
   });
 
   return (
-    <>
+    <div className={s.container}>
       <select
         value={selectGenre.value}
         name="genre"
@@ -40,7 +43,7 @@ const Select: FC<SelectItems> = ({ selectGenre, setSelectGenre }) => {
       >
         {genresItems.map((element, i) => (
           <option
-          disabled={element.disabled}
+            disabled={element.disabled}
             key={i}
             value={element.value}
           >
@@ -63,7 +66,7 @@ const Select: FC<SelectItems> = ({ selectGenre, setSelectGenre }) => {
           fill="#f90"
         />
       </svg>
-    </>
+    </div>
   );
 };
 

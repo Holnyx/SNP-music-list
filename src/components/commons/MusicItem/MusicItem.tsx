@@ -2,8 +2,6 @@ import React, { Dispatch, FC, memo, SetStateAction } from 'react';
 
 import s from './MusicItem.module.sass';
 import cx from 'classnames';
-import ModalWindow from '../ModalWindow/ModalWindow';
-import { GenresItems } from '@/store/types';
 
 type MusicItemItems = {
   name: string;
@@ -14,8 +12,9 @@ type MusicItemItems = {
   setEditIsOpen: Dispatch<SetStateAction<boolean>>;
   id: string;
   checked: boolean;
-  onClickInfo: () => void;
+  onClickInfo: (musicID: string) => void;
   removeMusic: (musicID: string) => void;
+  onClickEdit: (musicID: string) => void;
 };
 
 const MusicItem: FC<MusicItemItems> = ({
@@ -29,6 +28,7 @@ const MusicItem: FC<MusicItemItems> = ({
   checked,
   onClickInfo,
   removeMusic,
+  onClickEdit,
 }) => {
   return (
     <div
@@ -36,11 +36,10 @@ const MusicItem: FC<MusicItemItems> = ({
       id={id}
     >
       <button
-        className={s.closed}
+        className={s.delete}
         title="Cancel"
         onClick={() => removeMusic(id)}
       >
-        {' '}
         <svg
           width="15"
           height="15"
@@ -49,6 +48,7 @@ const MusicItem: FC<MusicItemItems> = ({
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
+            className={s['delete-img']}
             d="M6.74367 7.21198L19.573 19.8808L20.2458 19.1994L7.41646 6.53066L6.74367 7.21198ZM6.5418 19.784L7.24883 20.4822L20.7046 6.85577L19.9976 6.15759L6.5418 19.784Z"
             fill="#FF9900"
           />
@@ -80,12 +80,12 @@ const MusicItem: FC<MusicItemItems> = ({
           <div className={s.logo}>{name}</div>
           <div className={s.genre}>{performer}</div>
         </div>
-        <div className={s.genre}>
+        <div className={s['buttons-container']}>
           <button
             id={id}
             className={s.button}
             onClick={() => {
-              setInfoIsOpen(!infoIsOpen), onClickInfo();
+              setInfoIsOpen(!infoIsOpen), onClickInfo(id);
             }}
           >
             Info
@@ -94,7 +94,7 @@ const MusicItem: FC<MusicItemItems> = ({
             id={id}
             className={s.button}
             onClick={() => {
-              setEditIsOpen(!editIsOpen), onClickInfo();
+              setEditIsOpen(!editIsOpen), onClickEdit(id);
             }}
           >
             Edit
