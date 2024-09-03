@@ -1,19 +1,30 @@
 @import '../../../styles/mixins'
+@import '../../../styles/color'
+
+.container
+    position: relative
 
 .genre
     position: relative
     height: 69px
+    width: 384px
     padding: 16px
-    color: #f90
+    color: $color-orange
     font-family: "Heebo"
     font-weight: 100
     font-size: 24px
     line-height: 92%
-    background: #363531
-    border: 1px solid #f90
+    background: $color-gray
+    border: 1px solid $color-orange
     border-radius: 6px
     cursor: pointer
     appearance: none
+
+    &:focus-visible
+        outline: none
+        border: 1px solid $color-red
+        box-shadow: 0 0 5px $color-red
+        transition: box-shadow 0.5s ease
 
     @include mobile
         width: 134px
@@ -22,14 +33,16 @@
         font-size: 14px
 
 .color
-    color: #6c6c6c
+    color: $color-light-gray
 
 .icon
     position: absolute
-    top: 374px
-    right: 100px
+    top: 50%
+    right: 20px
+    transform: translateY(-50%)
 
     @include mobile
-        top: 195px
-        right: 70px
+        top: 50%
+        right: 10px
         width: 14px
+        transform: translateY(-50%)

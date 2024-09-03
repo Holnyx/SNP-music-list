@@ -1,12 +1,4 @@
-import React, {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  memo,
-  SetStateAction,
-  useCallback,
-  useState,
-} from 'react';
+import React, { ChangeEvent, Dispatch, FC, memo, SetStateAction } from 'react';
 
 import s from './Input.module.sass';
 import cx from 'classnames';
@@ -21,7 +13,7 @@ type InputItems = {
   max?: string;
   accept?: string;
   value?: string | number;
-  onChange:  Dispatch<SetStateAction<string>>;
+  onChange: Dispatch<SetStateAction<string>>;
 };
 
 const Input: FC<InputItems> = ({
@@ -35,7 +27,6 @@ const Input: FC<InputItems> = ({
   value,
   onChange,
 }) => {
-
   const changeName = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e.currentTarget.value);
   };

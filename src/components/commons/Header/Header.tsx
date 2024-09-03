@@ -1,9 +1,9 @@
 import React, { Dispatch, FC, memo, SetStateAction, useState } from 'react';
-import ModalWindow from '../ModalWindow/ModalWindow';
+
+import SearchInput from '../SearchInput/SearchInput';
 
 import s from './Header.module.sass';
 import cx from 'classnames';
-import SearchInput from '../SearchInput/SearchInput';
 
 type HeaderItems = {
   menuIsOpen: boolean;
@@ -18,6 +18,7 @@ const Header: FC<HeaderItems> = ({ menuIsOpen, setMenuIsOpen }) => {
         onClick={() => setMenuIsOpen(!menuIsOpen)}
       >
         <svg
+          className={s.color}
           width="34"
           height="34"
           viewBox="0 0 34 34"

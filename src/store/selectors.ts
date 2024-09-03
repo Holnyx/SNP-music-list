@@ -65,3 +65,10 @@ export const musicListSelector = createSelector(
     }
   }
 );
+
+export const selectMusic = createSelector(
+  [musicSelector, (state, selectedMusicId) => selectedMusicId],
+  (allMusics, selectedMusicId) => {
+    return allMusics.find(music => music.id === selectedMusicId);
+  }
+);

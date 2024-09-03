@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
 import s from './Button.module.sass';
 import cx from 'classnames';
@@ -24,4 +24,4 @@ const Button: FC<ButtonItems> = ({ title, onClickHandler }) => {
   );
 };
 
-export default Button;
+export default memo(Button);

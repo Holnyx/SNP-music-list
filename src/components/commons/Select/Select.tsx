@@ -1,24 +1,30 @@
 import React, { ChangeEvent, FC, memo, useState } from 'react';
 
+import { GenresItems, genresItems, MusicItems } from '@/store/types';
+
 import s from './Select.module.sass';
 import cx from 'classnames';
-import { GenresItems, genresItems } from '@/store/types';
 
 type SelectItems = {
-  value: string;
-  changeGenre: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  selectGenre: GenresItems
+  editIsOpen: boolean;
+  selectedMusic: MusicItems | undefined;
+  selectGenre: GenresItems;
+  setSelectGenre: React.Dispatch<React.SetStateAction<GenresItems>>;
 };
 
-const Select: FC<SelectItems> = ({ value, changeGenre }) => {
-  const [select, setSelect] = useState(value);
-
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelect(event.currentTarget.value);
+const Select: FC<SelectItems> = ({ selectGenre, setSelectGenre }) => {
+  const changeGenre = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.currentTarget.value;
+    const selectedGenre = genresItems.find(
+      genre => genre.value === selectedValue
+    );
+    if (selectedGenre) {
+      setSelectGenre(selectedGenre);
+    }
   };
 
   const isPlaceholder = genresItems.some(
-    element => element.value === select && element.disabled
+    element => element.value === selectGenre.value && element.disabled
   );
 
   const selectPlaceholder = cx({
@@ -27,8 +33,9 @@ const Select: FC<SelectItems> = ({ value, changeGenre }) => {
   });
 
   return (
-    <>
+    <div className={s.container}>
       <select
+        value={selectGenre.value}
         name="genre"
         id="genre"
         className={selectPlaceholder}
@@ -36,6 +43,7 @@ const Select: FC<SelectItems> = ({ value, changeGenre }) => {
       >
         {genresItems.map((element, i) => (
           <option
+            disabled={element.disabled}
             key={i}
             value={element.value}
           >
@@ -58,7 +66,7 @@ const Select: FC<SelectItems> = ({ value, changeGenre }) => {
           fill="#f90"
         />
       </svg>
-    </>
+    </div>
   );
 };
 

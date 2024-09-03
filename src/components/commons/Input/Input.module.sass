@@ -1,19 +1,26 @@
 @import '../../../styles/mixins'
+@import '../../../styles/color'
 
 .style-input
     width: 350px
     padding: 16px
-    color: #f90
+    color: $color-orange
     font-weight: 100
     font-size: 24px
     line-height: 92%
-    background: #363531
-    border: 1px solid #f90
+    background: $color-gray
+    border: 1px solid $color-orange
     border-radius: 6px
     font-family: "Heebo"
 
     &::placeholder
-        color: #6c6c6c
+        color: $color-light-gray
+
+    &:focus-visible
+        outline: none
+        border: 1px solid $color-red
+        box-shadow: 0 0 5px $color-red
+        transition: box-shadow 0.5s ease
 
     @include mobile
         width: 120px
@@ -24,13 +31,3 @@
         height: 0
         opacity: 0
         -webkit-appearance: none
-.style
-    width: 390px
-    padding: 16px
-    font-weight: 100
-    font-size: 24px
-    line-height: 92%
-    color: #f90
-    background: #363531
-    border: 1px solid #f90
-    border-radius: 6px

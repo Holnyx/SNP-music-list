@@ -28,6 +28,22 @@ const musicReducer = (
     case 'CHANGE-FILTER': {
       return { ...state, activeFilter: action.payload };
     }
+    case 'CHANGE-MUSIC-INPUTS': {
+      return {
+        ...state,
+        musicList: state.musicList.map(music =>
+          music.id === action.payload.musicId
+            ? {
+                ...music,
+                name: action.payload.name,
+                performer: action.payload.performer,
+                genre: action.payload.genre,
+                year: action.payload.year,
+              }
+            : music
+        ),
+      };
+    }
     case 'INIT-MUSICS-FROM-STORAGE': {
       return { ...state, musicList: action.payload };
     }

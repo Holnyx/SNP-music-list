@@ -1,4 +1,8 @@
+@import '../../../styles/mixins'
+@import '../../../styles/color'
+
 .item
+    position: relative
     display: flex
     flex-direction: column
     gap: 15px
@@ -34,7 +38,7 @@
         white-space: nowrap
         overflow: hidden
 
-.genre
+.buttons-container
     display: flex
     flex-direction: column
     align-items: flex-end
@@ -43,12 +47,38 @@
     .button
         width: 38px
         padding: 6px
-        color: #f90
+        color: $color-orange
         background: none
-        border: 1px solid #f90
+        border: 1px solid $color-orange
         border-radius: 6px
         cursor: pointer
+        transition: 0.5s background-color ease
+
+        &:hover
+            background-color: $color-orange-transparent
 
         &:active
-            background-color: #f90
+            background-color: $color-orange
             color: #1b1a1a
+
+.delete
+    position: absolute
+    right: -7px
+    top: -7px
+    display: flex
+    justify-content: center
+    padding: 3px
+    color: $color-orange
+    background: $color-gray
+    border: none
+    border-radius: 50%
+    cursor: pointer
+    transition: 0.5s background ease
+
+    &:hover
+        color: $color-gray
+        background: $color-orange
+
+        .delete-img
+            fill: $color-gray
+            transition: 0.5s fill ease
