@@ -8,11 +8,11 @@ export default function Home() {
         <title>Music List</title>
         <meta
           name="description"
-          content="Todo List"
+          content="Music List"
         />
         <meta
           name="keywords"
-          content="todo, todo list, tasks, task"
+          content="music, music list, musics"
         />
         <meta
           name="viewport"
