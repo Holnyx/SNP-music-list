@@ -1,0 +1,33 @@
+@import '../../../styles/mixins'
+@import '../../../styles/color'
+
+.style-input
+    width: 350px
+    padding: 16px
+    color: $color-orange
+    font-weight: 100
+    font-size: 24px
+    line-height: 92%
+    background: $color-gray
+    border: 1px solid $color-orange
+    border-radius: 6px
+    font-family: "Heebo"
+
+    &::placeholder
+        color: $color-light-gray
+
+    &:focus-visible
+        outline: none
+        border: 1px solid $color-red
+        box-shadow: 0 0 5px $color-red
+        transition: box-shadow 0.5s ease
+
+    @include mobile
+        width: 120px
+        padding: 6px
+        font-size: 14px
+
+    &[type="number"]::-webkit-inner-spin-button
+        height: 0
+        opacity: 0
+        -webkit-appearance: none

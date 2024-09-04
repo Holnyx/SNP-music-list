@@ -1,0 +1,37 @@
+@import '../../../../styles/mixins'
+@import '../../../../styles/color'
+
+.add_image
+    display: flex
+    justify-content: center
+    width: 194px
+    height: 184px
+    padding-top: 10px
+    color: $color-orange
+    font-weight: 100
+    font-size: 148px
+    background: $color-gray
+    border: 1px solid $color-orange
+    border-radius: 6px
+    cursor: pointer
+
+    @include mobile
+        width: 124px
+        height: 114px
+        font-size: 85px
+
+.uploads[type="file"]
+    display: none
+
+.icon
+    width: 194px
+    height: 194px
+    border-radius: 6px
+
+    @include mobile
+        height: 124px
+    
+.add_image_checked
+    padding-top: 0
+    padding-bottom: 10px
+    cursor: default

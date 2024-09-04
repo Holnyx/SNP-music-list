@@ -1,0 +1,247 @@
+@import '../../../styles/mixins'
+@import '../../../styles/color'
+
+.container
+    position: fixed
+    z-index: 1000
+    top: 0
+    left: 0
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 100%
+    height: 100%
+    background-color: rgba(0, 0, 0, 0.5)
+    backdrop-filter: blur(10px)
+    transform: scale(0)
+
+    .window
+        position: relative
+        display: flex
+        flex-direction: column
+        justify-content: space-between
+        max-width: 860px
+        width: 100%
+        height: 670px
+        padding: 38px 82px
+        background: $color-black
+        background: linear-gradient(to top, #1b1a1adb, #1b1a1adb), linear-gradient(to top, #535353 , #FF9900)
+        background-clip: padding-box, border-box
+        background-origin: padding-box, border-box
+        border: 2px solid transparent
+        border-radius: 14px
+        backdrop-filter: blur(100px)
+        box-shadow: 0 0 60px 0 rgba(0, 0, 0, 0.62)
+        box-sizing: border-box
+
+        @include mobile
+            max-width: 460px
+            width: 100%
+            height: 370px
+            padding: 28px 28px
+
+        .title
+            margin-bottom: 10px
+            color: $color-orange
+            font-family: "Source Sans 3"
+            font-weight: 700
+            font-size: 42px
+            line-height: 70%
+            text-transform: uppercase
+
+            @include mobile
+                font-size: 20px
+
+        .form
+            display: flex
+            justify-content: space-between
+
+            @include mobile
+                justify-content: space-around
+                gap: 26px
+
+            .fieldset
+                display: flex
+                flex-direction: column
+                gap: 46px
+
+                @include mobile
+                    gap: 20px
+
+    .info
+        justify-content: start
+        max-width: 624px
+        width: 100%
+        height: 470px
+
+        @include mobile
+            max-width: 400px
+            height: 300px
+
+        .title
+            margin-bottom: 40px
+
+        .form
+            justify-content: space-evenly
+            align-items: center
+            gap: 40px
+
+            .fieldset
+                align-items: flex-start
+                gap: 15px
+                color: $color-orange
+                font-family: 'Heebo'
+                font-size: 28px
+                text-align: start
+                word-break: break-all
+
+                @include mobile
+                    gap: 10px
+                    font-size: 16px
+
+                .label
+                    color: $color-light-gray
+                    font-size: 12px
+                    font-weight: 200
+
+                    @include mobile
+                        font-size: 6px
+
+.add_images_box
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 28px
+    gap: 28px
+    align-items: center
+
+.uploads[type="file"]
+    display: none
+
+.genre
+    width: 424px
+    padding: 16px
+    font-weight: 100
+    font-size: 24px
+    line-height: 92%
+    color: $color-orange
+    background: $color-gray
+    border: 1px solid $color-orange
+    border-radius: 6px
+    cursor: pointer
+
+.buttons_box
+    display: flex
+    justify-content: space-between
+
+    @include mobile
+        justify-content: space-around
+        gap: 26px
+
+.closed
+    position: absolute
+    right: 22px
+    top: 20px
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 34px
+    padding: 3px
+    color: $color-orange
+    font-weight: 100
+    font-size: 37px
+    text-transform: capitalize
+    text-align: center
+    background: $color-gray
+    border: none
+    border-radius: 6px
+    cursor: pointer
+    transition: 0.5s background ease
+
+    &:hover
+        background-color: $color-orange
+
+        .closed-img
+            fill: $color-gray
+
+    @include mobile
+        width: 24px
+        height: 24px
+
+.genre
+    width: 390px
+    padding: 16px
+    color: $color-orange
+    font-family: "Heebo"
+    font-weight: 100
+    font-size: 24px
+    line-height: 92%
+    background: $color-gray
+    border: 1px solid $color-orange
+    border-radius: 6px
+    cursor: pointer
+
+.active
+    transform: scale(1)
+
+.add_music
+    justify-content: end
+
+.style-input
+    position: relative
+    width: 350px
+    padding: 16px
+    color: $color-orange
+    font-weight: 100
+    font-size: 24px
+    line-height: 92%
+    background: $color-gray
+    border: 1px solid $color-orange
+    border-radius: 6px
+    font-family: "Heebo"
+
+    &::placeholder
+        color: $color-light-gray
+
+    &:focus-visible
+        outline: none
+        border: 1px solid $color-red
+        box-shadow: 0 0 5px $color-red
+        transition: box-shadow 0.5s ease
+
+    @include mobile
+        width: 120px
+        padding: 6px
+        font-size: 14px
+
+    &[type="number"]::-webkit-inner-spin-button
+        height: 0
+        opacity: 0
+        -webkit-appearance: none
+
+.error-message
+    position: absolute
+    color: $color-red
+    font-family: "Heebo"
+    font-weight: 200
+
+    @include mobile
+        font-size: 6px
+
+.error-message-name
+    top: 204px
+
+    @include mobile
+        top: 122px
+
+.error-message-performer
+    top: 320px
+
+    @include mobile
+        top: 176px
+
+.error-message-genre
+    bottom: 215px
+
+    @include mobile
+        bottom: 130px
