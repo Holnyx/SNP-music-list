@@ -66,7 +66,7 @@ export const musicListSelector = createSelector(
   }
 );
 
-export const selectMusic = createSelector(
+export const selectedMusicSelector = createSelector(
   [musicSelector, (state, selectedMusicId) => selectedMusicId],
   (allMusics, selectedMusicId) => {
     return allMusics.find(music => music.id === selectedMusicId);

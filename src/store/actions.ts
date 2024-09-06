@@ -1,4 +1,4 @@
-import { FilterMusicValues, GenresItems, MusicItems } from './types';
+import { FilterMusicValues, GenresItems, MusicItem } from './types';
 
 export type RemoveMusic = {
   type: 'REMOVE-MUSIC';
@@ -7,7 +7,7 @@ export type RemoveMusic = {
 
 export type AddMusic = {
   type: 'ADD-MUSIC';
-  payload: { music: MusicItems };
+  payload: { music: MusicItem };
 };
 
 export type ChangeMusicsFilter = {
@@ -28,7 +28,7 @@ export type ChangeMusicInputs = {
 
 export type InitMusicsFromStorage = {
   type: 'INIT-MUSICS-FROM-STORAGE';
-  payload: MusicItems[];
+  payload: MusicItem[];
 };
 
 export type Actions =
@@ -45,7 +45,7 @@ export const removeMusicAC = (payload: { musicId: string }): RemoveMusic => {
   };
 };
 
-export const addMusicAC = (payload: { music: MusicItems }): AddMusic => {
+export const addMusicAC = (payload: { music: MusicItem }): AddMusic => {
   return {
     type: 'ADD-MUSIC',
     payload,
@@ -73,7 +73,7 @@ export const changeMusicInputsAC = (payload: {
 });
 
 export const InitMusicsFromStorageAC = (
-  music: MusicItems[]
+  music: MusicItem[]
 ): InitMusicsFromStorage => ({
   type: 'INIT-MUSICS-FROM-STORAGE',
   payload: music,

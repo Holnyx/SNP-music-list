@@ -9,22 +9,24 @@ import React, {
   useState,
 } from 'react';
 
+import { v1 } from 'uuid';
+
 import Input from '../Input/Input';
 import AddImageInput from '../Input/AddImageInput/AddImageInput';
 import Button from '../Buttons/Button/Button';
 import Select from '../Select/Select';
 
-import { genresItems, GenresItems, MusicItems } from '@/store/types';
-import { useActionWithPayload } from '@/hooks/hooks';
+import { GenresItems, MusicItem } from '@/store/types';
+import { useActionWithPayload } from '@/hooks/useAction';
 import { addMusicAC, changeMusicInputsAC } from '@/store/actions';
 import { useSelector } from 'react-redux';
-import { selectMusic } from '@/store/selectors';
+import { selectedMusicSelector } from '@/store/selectors';
 
 import s from './ModalWindow.module.sass';
 import cx from 'classnames';
+import { genresItems } from '@/store/constants';
 
 type ModalWindowItems = {
-  id: string;
   menuIsOpen: boolean;
   setMenuIsOpen: Dispatch<SetStateAction<boolean>>;
   infoIsOpen: boolean;
@@ -32,17 +34,20 @@ type ModalWindowItems = {
   editIsOpen: boolean;
   setEditIsOpen: Dispatch<SetStateAction<boolean>>;
   deleteMusicOnClick: (id: string) => void;
-  checked: boolean;
-  setChecked: Dispatch<SetStateAction<boolean>>;
-  name: string;
-  performer: string;
-  genre: GenresItems;
-  year: string | number;
+  selectedMusicItem: {
+    name: string;
+    performer: string;
+    genre: {
+      disabled?: boolean;
+      value: string;
+      title: string;
+    };
+    year: string | number;
+  };
   selectedMusicId: string;
 };
 
 const ModalWindow: FC<ModalWindowItems> = ({
-  id,
   menuIsOpen,
   setMenuIsOpen,
   infoIsOpen,
@@ -50,27 +55,24 @@ const ModalWindow: FC<ModalWindowItems> = ({
   editIsOpen,
   setEditIsOpen,
   deleteMusicOnClick,
-  name,
-  performer,
-  year,
-  genre,
+  selectedMusicItem,
   selectedMusicId,
 }) => {
-  const [inputName, setInputName] = useState(name);
-  const [inputPerformer, setInputPerformer] = useState(performer);
-  const [selectGenre, setSelectGenre] = useState(genre || genresItems[0]);
-  const [inputYear, setInputYear] = useState(year);
-  const [error, setError] = useState(false);
-
-  const selectedMusic = useSelector(state =>
-    selectMusic(state, selectedMusicId)
+  const [inputName, setInputName] = useState(selectedMusicItem.name);
+  const [inputPerformer, setInputPerformer] = useState(
+    selectedMusicItem.performer
   );
+  const [selectGenre, setSelectGenre] = useState(
+    selectedMusicItem.genre || genresItems[0]
+  );
+  const [inputYear, setInputYear] = useState(selectedMusicItem.year);
+  const [error, setError] = useState(false);
 
   const addMusicAction = useActionWithPayload(addMusicAC);
   const changeMusicInputsAction = useActionWithPayload(changeMusicInputsAC);
 
-  const newMusic: MusicItems = {
-    id: id,
+  const newMusic: MusicItem = {
+    id: v1(),
     name: inputName,
     performer: inputPerformer,
     genre: selectGenre,
@@ -78,7 +80,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
   };
 
   const addMusicHandler = useCallback(
-    (music: MusicItems) => {
+    (music: MusicItem) => {
       if (checkInputsValue) {
         addMusicAction({ music });
         closeModalWindow();
@@ -104,11 +106,13 @@ const ModalWindow: FC<ModalWindowItems> = ({
 
   const changeMusicInputsHandler = useCallback(() => {
     if (checkInputsValue) {
-      if (selectedMusic) {
-        const updatedName = inputName !== '' ? inputName : selectedMusic.name;
+      if (selectedMusicItem) {
+        const updatedName =
+          inputName !== '' ? inputName : selectedMusicItem.name;
         const updatedPerformer =
-          inputPerformer !== '' ? inputPerformer : selectedMusic.performer;
-        const updatedYear = inputYear !== '' ? inputYear : selectedMusic.year;
+          inputPerformer !== '' ? inputPerformer : selectedMusicItem.performer;
+        const updatedYear =
+          inputYear !== '' ? inputYear : selectedMusicItem.year;
         changeMusicInputs(
           selectedMusicId,
           updatedName,
@@ -127,7 +131,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
     inputPerformer,
     selectGenre,
     inputYear,
-    selectedMusic,
+    selectedMusicItem,
     changeMusicInputs,
   ]);
 
@@ -151,28 +155,18 @@ const ModalWindow: FC<ModalWindowItems> = ({
 
   //Change input values ​​when adding and editing
   useEffect(() => {
-    if (editIsOpen && selectedMusic) {
-      setInputName(name);
-      setInputPerformer(performer);
-      setSelectGenre(genre);
-      setInputYear(year);
+    if (editIsOpen && selectedMusicItem) {
+      setInputName(selectedMusicItem.name);
+      setInputPerformer(selectedMusicItem.performer);
+      setSelectGenre(selectedMusicItem.genre);
+      setInputYear(selectedMusicItem.year);
     } else if (menuIsOpen) {
       setInputName('');
       setInputPerformer('');
       setSelectGenre(genresItems[0]);
       setInputYear('');
     }
-  }, [editIsOpen, menuIsOpen, selectedMusic]);
-
-  // Update input values
-  useEffect(() => {
-    if (selectedMusic) {
-      setInputName(selectedMusic.name);
-      setInputPerformer(selectedMusic.performer);
-      setSelectGenre(selectedMusic.genre);
-      setInputYear(selectedMusic.year);
-    }
-  }, [selectedMusic, selectedMusicId]);
+  }, [editIsOpen, menuIsOpen, selectedMusicItem]);
 
   const checkInputsValue =
     inputName.length > 1 &&
@@ -250,19 +244,19 @@ const ModalWindow: FC<ModalWindowItems> = ({
             <AddImageInput />
           </fieldset>
           <fieldset className={s.fieldset}>
-            {infoIsOpen && selectedMusicId && selectedMusic ? (
+            {infoIsOpen && selectedMusicId && selectedMusicItem ? (
               <>
                 <span className={s.label}>Name</span>
-                <h6 className={s.names}>{selectedMusic.name}</h6>
+                <h6 className={s.names}>{selectedMusicItem.name}</h6>
                 <span className={s.label}>Performer</span>
-                <h6 className={s.names}>{selectedMusic.performer}</h6>
+                <h6 className={s.names}>{selectedMusicItem.performer}</h6>
                 <span className={s.label}>Genre</span>
-                <h6 className={s.names}>{selectedMusic.genre.title}</h6>
+                <h6 className={s.names}>{selectedMusicItem.genre.title}</h6>
 
-                {selectedMusic.year && (
+                {selectedMusicItem.year && (
                   <>
                     <span className={s.label}>Year</span>
-                    <h6 className={s.names}>{selectedMusic.year}</h6>
+                    <h6 className={s.names}>{selectedMusicItem.year}</h6>
                   </>
                 )}
               </>
@@ -289,8 +283,6 @@ const ModalWindow: FC<ModalWindowItems> = ({
                 />
                 {errorPerformer}
                 <Select
-                  editIsOpen={editIsOpen}
-                  selectedMusic={selectedMusic}
                   setSelectGenre={setSelectGenre}
                   selectGenre={selectGenre}
                 />
