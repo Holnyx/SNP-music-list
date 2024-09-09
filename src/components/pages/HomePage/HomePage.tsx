@@ -1,18 +1,19 @@
 import React, { memo, useCallback, useEffect, useId, useState } from 'react';
 
+import { useSelector } from 'react-redux';
+
 import Header from '@/components/commons/Header/Header';
 import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
 import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
 import { useActionWithPayload } from '@/hooks/useAction';
 import { InitMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
-import { useSelector } from 'react-redux';
+import { FilterMusicValues } from '@/store/types';
 import {
   musicListSelector,
   musicSelector,
   selectedMusicSelector,
 } from '@/store/selectors';
-import { MusicItem } from '@/store/types';
 
 import s from './HomePage.module.sass';
 import cx from 'classnames';
@@ -25,7 +26,7 @@ const HomePage = () => {
   const [selectedMusicItem, setSelectedMusicItem] = useState({
     name: '',
     performer: '',
-    genre: { value: '1', title: 'Choose genre *' },
+    genre: { value: '1', title: 'Other' as FilterMusicValues },
     year: +Number() || '',
   });
 
@@ -39,13 +40,6 @@ const HomePage = () => {
   const InitMusicsFromStorageAction = useActionWithPayload(
     InitMusicsFromStorageAC
   );
-
-  const removeMusic = useCallback((musicId: string) => {
-    removeMusicAction({ musicId });
-  }, []);
-  const InitMusicsFromStorage = useCallback((musics: MusicItem[]) => {
-    InitMusicsFromStorageAction(musics);
-  }, []);
 
   const openInfoModal = useCallback(
     (id: string) => {
@@ -78,6 +72,12 @@ const HomePage = () => {
     [selectedMusicSelector, setEditIsOpen]
   );
 
+  const onCloseModalWindow = useCallback(() => {
+    setMenuIsOpen(false);
+    setInfoIsOpen(false);
+    setEditIsOpen(false);
+  }, []);
+
   // Update input values
   useEffect(() => {
     if (selectedMusic) {
@@ -94,9 +94,9 @@ const HomePage = () => {
     const storedMusics = localStorage.getItem('musics');
     if (storedMusics) {
       const parsedMusics = JSON.parse(storedMusics);
-      InitMusicsFromStorage(parsedMusics);
+      InitMusicsFromStorageAction(parsedMusics);
     }
-  }, [InitMusicsFromStorage]);
+  }, [InitMusicsFromStorageAction]);
 
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {
@@ -109,7 +109,6 @@ const HomePage = () => {
   return (
     <div className={s.container}>
       <Header
-        menuIsOpen={menuIsOpen}
         setMenuIsOpen={setMenuIsOpen}
       />
       <FilterGenres />
@@ -121,7 +120,7 @@ const HomePage = () => {
               id={element.id}
               name={element.name}
               performer={element.performer}
-              removeMusic={removeMusic}
+              removeMusic={removeMusicAction}
               onClickInfo={openInfoModal}
               onClickEdit={openEditModal}
             />
@@ -129,13 +128,11 @@ const HomePage = () => {
         })}
       </div>
       <ModalWindow
+        onCloseModalWindow={onCloseModalWindow}
         menuIsOpen={menuIsOpen}
-        setMenuIsOpen={setMenuIsOpen}
         infoIsOpen={infoIsOpen}
-        setInfoIsOpen={setInfoIsOpen}
         editIsOpen={editIsOpen}
-        setEditIsOpen={setEditIsOpen}
-        deleteMusicOnClick={removeMusic}
+        deleteMusicOnClick={removeMusicAction}
         selectedMusicItem={selectedMusicItem}
         selectedMusicId={selectedMusicId}
       />

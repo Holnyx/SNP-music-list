@@ -8,7 +8,7 @@ type MusicItemItems = {
   performer: string;
   id: string;
   onClickInfo: (musicID: string) => void;
-  removeMusic: (musicID: string) => void;
+  removeMusic: (payload: { musicId: string }) => void;
   onClickEdit: (musicID: string) => void;
 };
 
@@ -28,7 +28,7 @@ const MusicItemBox: FC<MusicItemItems> = ({
       <button
         className={s.delete}
         title="Cancel"
-        onClick={() => removeMusic(id)}
+        onClick={() => removeMusic({ musicId: id })}
       >
         <svg
           width="15"

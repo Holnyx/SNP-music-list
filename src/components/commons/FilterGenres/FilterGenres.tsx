@@ -29,7 +29,7 @@ const FilterGenres = () => {
             className={cx(s['button'], {
               [s['btn-focus']]: filter === item.title,
             })}
-            onClick={() => changeMusicsFilter(item.title as FilterMusicValues)}
+            onClick={() => changeMusicsFilter(item.title)}
           >
             {item.title}
           </button>

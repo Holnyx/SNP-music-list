@@ -6,16 +6,15 @@ import s from './Header.module.sass';
 import cx from 'classnames';
 
 type HeaderItems = {
-  menuIsOpen: boolean;
   setMenuIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-const Header: FC<HeaderItems> = ({ menuIsOpen, setMenuIsOpen }) => {
+const Header: FC<HeaderItems> = ({ setMenuIsOpen }) => {
   return (
     <div className={s.header}>
       <button
         className={s.button}
-        onClick={() => setMenuIsOpen(!menuIsOpen)}
+        onClick={() => setMenuIsOpen(prevValue => !prevValue)}
       >
         <svg
           className={s.color}

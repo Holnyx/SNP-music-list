@@ -31,6 +31,6 @@ export type FilterMusicValues =
 
 export type GenresItems = {
   value: string;
-  title: string;
+  title: FilterMusicValues;
   disabled?: boolean;
 };
