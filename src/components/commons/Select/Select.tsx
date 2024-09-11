@@ -1,13 +1,12 @@
-import React, { ChangeEvent, FC, memo, useState } from 'react';
+import React, { FC, memo } from 'react';
 
-import { GenresItems, genresItems, MusicItems } from '@/store/types';
+import { GenresItems } from '@/store/types';
 
 import s from './Select.module.sass';
 import cx from 'classnames';
+import { genresItems } from '@/store/constants';
 
 type SelectItems = {
-  editIsOpen: boolean;
-  selectedMusic: MusicItems | undefined;
   selectGenre: GenresItems;
   setSelectGenre: React.Dispatch<React.SetStateAction<GenresItems>>;
 };

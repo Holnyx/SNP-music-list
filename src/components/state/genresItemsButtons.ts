@@ -1,11 +1,6 @@
+import { GenresItems } from "@/store/types";
 
-export type GenresItems = {
-  value: string;
-  title: string;
-  disabled?: boolean;
-};
-
-export const genresItems: GenresItems[] = [
+export const genresItemsButtons: GenresItems[] = [
   { value: '14', title: 'All' },
   { value: '13', title: 'Other' },
   { value: '1', title: 'Blues' },
@@ -19,5 +14,5 @@ export const genresItems: GenresItems[] = [
   { value: '9', title: 'Rock' },
   { value: '10', title: 'Pop' },
   { value: '11', title: 'Reggae / Dancehall' },
-  { value: '12', title: 'Funk' }, 
+  { value: '12', title: 'Funk' },
 ];
