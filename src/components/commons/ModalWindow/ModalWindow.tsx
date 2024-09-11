@@ -17,10 +17,10 @@ import Select from '../Select/Select';
 import { FilterMusicValues, GenresItems, MusicItem } from '@/store/types';
 import { useActionWithPayload } from '@/hooks/useAction';
 import { addMusicAC, changeMusicInputsAC } from '@/store/actions';
+import { genresItems } from '@/store/constants';
 
 import s from './ModalWindow.module.sass';
 import cx from 'classnames';
-import { genresItems } from '@/store/constants';
 
 type ModalWindowItems = {
   menuIsOpen: boolean;
@@ -63,26 +63,12 @@ const ModalWindow: FC<ModalWindowItems> = ({
   const addMusicAction = useActionWithPayload(addMusicAC);
   const changeMusicInputsAction = useActionWithPayload(changeMusicInputsAC);
 
-  const newMusic: MusicItem = {
-    id: v1(),
-    name: inputName,
-    performer: inputPerformer,
-    genre: selectGenre,
-    year: inputYear,
-  };
-
-  const addMusicHandler = useCallback(
-    (music: MusicItem) => {
-      if (checkInputsValue) {
-        addMusicAction({ music });
-        onCloseModalWindow();
-        setError(false);
-      } else {
-        setError(true);
-      }
-    },
-    [inputName, inputPerformer, selectGenre, inputYear, addMusicAction]
-  );
+  const checkInputsValue =
+    inputName.length > 1 &&
+    inputPerformer.length > 1 &&
+    inputName.trim() !== '' &&
+    inputPerformer.trim() !== '' &&
+    !selectGenre.disabled;
 
   const changeMusic = useCallback(() => {
     if (checkInputsValue) {
@@ -116,9 +102,37 @@ const ModalWindow: FC<ModalWindowItems> = ({
     changeMusicInputsAction,
   ]);
 
+  const addMusicHandler = useCallback(
+    (music: MusicItem) => {
+      if (checkInputsValue) {
+        addMusicAction({ music });
+        onCloseModalWindow();
+        setError(false);
+      } else {
+        setError(true);
+      }
+    },
+    [checkInputsValue, addMusicAction, onCloseModalWindow]
+  );
+
   const saveClickHandler = useCallback(() => {
+    const newMusic: MusicItem = {
+      id: v1(),
+      name: inputName,
+      performer: inputPerformer,
+      genre: selectGenre,
+      year: inputYear,
+    };
     menuIsOpen ? addMusicHandler(newMusic) : changeMusic();
-  }, [addMusicHandler, newMusic]);
+  }, [
+    menuIsOpen,
+    inputName,
+    inputPerformer,
+    selectGenre,
+    inputYear,
+    addMusicHandler,
+    changeMusic,
+  ]);
 
   const changeYear = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.currentTarget.value);
@@ -141,13 +155,6 @@ const ModalWindow: FC<ModalWindowItems> = ({
       setInputYear('');
     }
   }, [editIsOpen, menuIsOpen, selectedMusicItem]);
-
-  const checkInputsValue =
-    inputName.length > 1 &&
-    inputPerformer.length > 1 &&
-    inputName.trim() !== '' &&
-    inputPerformer.trim() !== '' &&
-    !selectGenre.disabled;
 
   const errorGenre =
     error && selectGenre.disabled ? (
