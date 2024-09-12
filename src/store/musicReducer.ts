@@ -4,6 +4,7 @@ import { Actions } from './actions';
 const initialState: MusicState = {
   musicList: [],
   activeFilter: 'All',
+  searchQuery: '',
 };
 
 const musicReducer = (
@@ -47,6 +48,8 @@ const musicReducer = (
     case 'INIT-MUSICS-FROM-STORAGE': {
       return { ...state, musicList: action.payload };
     }
+    case 'SET-SEARCH-QUERY':
+      return { ...state, searchQuery: action.payload };
     default:
       return state;
   }

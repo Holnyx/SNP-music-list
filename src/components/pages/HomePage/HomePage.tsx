@@ -10,7 +10,7 @@ import { useActionWithPayload } from '@/hooks/useAction';
 import { InitMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
 import { FilterMusicValues } from '@/store/types';
 import {
-  musicListSelector,
+  combinedFilteredMusicsSelector,
   musicSelector,
   selectedMusicSelector,
 } from '@/store/selectors';
@@ -29,9 +29,8 @@ const HomePage = () => {
     genre: { value: '1', title: 'Other' as FilterMusicValues },
     year: +Number() || '',
   });
-
+  const filteredMusics = useSelector(combinedFilteredMusicsSelector);
   const allMusics = useSelector(musicSelector);
-  const filteredMusics = useSelector(musicListSelector);
   const selectedMusic = useSelector(state =>
     selectedMusicSelector(state, selectedMusicId)
   );
@@ -108,9 +107,7 @@ const HomePage = () => {
 
   return (
     <div className={s.container}>
-      <Header
-        setMenuIsOpen={setMenuIsOpen}
-      />
+      <Header setMenuIsOpen={setMenuIsOpen} />
       <FilterGenres />
       <div className={s.container_music}>
         {filteredMusics.map((element, i) => {

@@ -1,6 +1,8 @@
-import React, { Dispatch, FC, memo, SetStateAction, useState } from 'react';
+import React, { Dispatch, FC, memo, SetStateAction, useCallback } from 'react';
 
 import SearchInput from '../SearchInput/SearchInput';
+import { useActionWithPayload } from '@/hooks/useAction';
+import { setSearchQueryAC } from '@/store/actions';
 
 import s from './Header.module.sass';
 import cx from 'classnames';
@@ -10,6 +12,15 @@ type HeaderItems = {
 };
 
 const Header: FC<HeaderItems> = ({ setMenuIsOpen }) => {
+  const removeMusicAction = useActionWithPayload(setSearchQueryAC);
+
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      removeMusicAction(query);
+    },
+    [removeMusicAction]
+  );
+
   return (
     <div className={s.header}>
       <button
@@ -51,7 +62,7 @@ const Header: FC<HeaderItems> = ({ setMenuIsOpen }) => {
           </defs>
         </svg>
       </button>
-      <SearchInput />
+      <SearchInput onSearchChange={handleSearchChange} />
     </div>
   );
 };

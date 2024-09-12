@@ -1,4 +1,3 @@
-// import { GenresItems } from "@/components/state/genresItems";
 
 export type MusicItem = {
   id: string;
@@ -11,6 +10,7 @@ export type MusicItem = {
 export type MusicState = {
   musicList: MusicItem[];
   activeFilter: FilterMusicValues;
+  searchQuery: string
 };
 
 export type FilterMusicValues =
