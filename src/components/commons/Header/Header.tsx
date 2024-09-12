@@ -12,13 +12,13 @@ type HeaderItems = {
 };
 
 const Header: FC<HeaderItems> = ({ setMenuIsOpen }) => {
-  const removeMusicAction = useActionWithPayload(setSearchQueryAC);
+  const setSearchQuery = useActionWithPayload(setSearchQueryAC);
 
   const handleSearchChange = useCallback(
     (query: string) => {
-      removeMusicAction(query);
+      setSearchQuery(query);
     },
-    [removeMusicAction]
+    [setSearchQuery]
   );
 
   return (
