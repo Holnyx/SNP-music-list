@@ -14,13 +14,24 @@ export const musicFilterSelector = createSelector(
   state => state.activeFilter
 );
 
-export const musicListSelector = createSelector(
-  [musicSelector, musicFilterSelector],
-  (music, filter) => {
-    if (filter === 'All') {
-      return music;
-    }
-    return music.filter(t => t.genre.title === filter);
+export const searchQuerySelector = createSelector(
+  rootSelector,
+  state => state.searchQuery
+);
+
+export const combinedFilteredMusicsSelector = createSelector(
+  [musicSelector, musicFilterSelector, searchQuerySelector],
+  (musicList, genreFilter, searchQuery) => {
+    const filteredByGenre =
+      genreFilter === 'All'
+        ? musicList
+        : musicList.filter(music => music.genre.title === genreFilter);
+
+    return filteredByGenre.filter(
+      music =>
+        music.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        music.performer.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   }
 );
 

@@ -31,12 +31,18 @@ export type InitMusicsFromStorage = {
   payload: MusicItem[];
 };
 
+export type SetSearchQuery = {
+  type: 'SET-SEARCH-QUERY';
+  payload: string;
+};
+
 export type Actions =
   | RemoveMusic
   | AddMusic
   | ChangeMusicsFilter
   | ChangeMusicInputs
-  | InitMusicsFromStorage;
+  | InitMusicsFromStorage
+  | SetSearchQuery;
 
 export const removeMusicAC = (payload: { musicId: string }): RemoveMusic => {
   return {
@@ -77,4 +83,9 @@ export const InitMusicsFromStorageAC = (
 ): InitMusicsFromStorage => ({
   type: 'INIT-MUSICS-FROM-STORAGE',
   payload: music,
+});
+
+export const setSearchQueryAC = (searchQuery: string): SetSearchQuery => ({
+  type: 'SET-SEARCH-QUERY',
+  payload: searchQuery,
 });
