@@ -23,8 +23,8 @@ import s from './ModalWindow.module.sass';
 import cx from 'classnames';
 
 type ModalWindowItems = {
-  menuIsOpen: boolean;
-  infoIsOpen: boolean;
+  menuIsOpen?: boolean;
+  infoIsOpen?: boolean;
   editIsOpen: boolean;
   onCloseModalWindow: () => void;
   deleteMusicOnClick: (payload: { musicId: string }) => void;
