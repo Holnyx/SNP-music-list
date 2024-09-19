@@ -157,12 +157,15 @@
     border-radius: 6px
     cursor: pointer
     transition: 0.5s background ease
+    .closed-img
+        width: 27px
+        height: 27px
 
     &:hover
         background-color: $color-orange
 
         .closed-img
-            fill: $color-gray
+            filter: invert(150%) sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(0%) contrast(50%)
 
     @include mobile
         width: 24px

@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useId, useState } from 'react';
 
 import { useSelector } from 'react-redux';
+import { getCookie, setCookie } from 'cookies-next';
 
 import Header from '@/components/commons/Header/Header';
 import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
@@ -8,7 +9,7 @@ import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
 import { useActionWithPayload } from '@/hooks/useAction';
 import { InitMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
-import { FilterMusicValues } from '@/store/types';
+import { FilterMusicValues, SelectedMusicItem } from '@/store/types';
 import {
   combinedFilteredMusicsSelector,
   musicSelector,
@@ -23,12 +24,14 @@ const HomePage = () => {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
   const [selectedMusicId, setSelectedMusicId] = useState<string>('');
-  const [selectedMusicItem, setSelectedMusicItem] = useState({
-    name: '',
-    performer: '',
-    genre: { value: '1', title: 'Other' as FilterMusicValues },
-    year: +Number() || '',
-  });
+  const [selectedMusicItem, setSelectedMusicItem] = useState<SelectedMusicItem>(
+    {
+      name: '',
+      performer: '',
+      genre: { value: '1', title: 'Other' as FilterMusicValues },
+      year: +Number() || '',
+    }
+  );
   const filteredMusics = useSelector(combinedFilteredMusicsSelector);
   const allMusics = useSelector(musicSelector);
   const selectedMusic = useSelector(state =>
@@ -90,7 +93,7 @@ const HomePage = () => {
   }, [selectedMusic, selectedMusicId]);
 
   useEffect(() => {
-    const storedMusics = localStorage.getItem('musics');
+    const storedMusics = getCookie('musics');
     if (storedMusics) {
       const parsedMusics = JSON.parse(storedMusics);
       InitMusicsFromStorageAction(parsedMusics);
@@ -99,9 +102,9 @@ const HomePage = () => {
 
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {
-      localStorage.setItem('musics', JSON.stringify(allMusics));
+      setCookie('musics', JSON.stringify(allMusics));
     } else {
-      localStorage.removeItem('musics');
+      setCookie('musics', '');
     }
   }, [allMusics]);
 

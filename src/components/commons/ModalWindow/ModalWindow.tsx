@@ -8,13 +8,15 @@ import React, {
 } from 'react';
 
 import { v1 } from 'uuid';
+import Image from 'next/image';
+import deleteIconUrl from '/public/img/delete-icon.svg?url';
 
 import Input from '../Input/Input';
 import AddImageInput from '../Input/AddImageInput/AddImageInput';
 import Button from '../Buttons/Button/Button';
 import Select from '../Select/Select';
 
-import { FilterMusicValues, GenresItems, MusicItem } from '@/store/types';
+import { MusicItem, SelectedMusicItem } from '@/store/types';
 import { useActionWithPayload } from '@/hooks/useAction';
 import { addMusicAC, changeMusicInputsAC } from '@/store/actions';
 import { genresItems } from '@/store/constants';
@@ -28,16 +30,7 @@ type ModalWindowItems = {
   editIsOpen: boolean;
   onCloseModalWindow: () => void;
   deleteMusicOnClick: (payload: { musicId: string }) => void;
-  selectedMusicItem: {
-    name: string;
-    performer: string;
-    genre: {
-      disabled?: boolean;
-      value: string;
-      title: FilterMusicValues;
-    };
-    year: string | number;
-  };
+  selectedMusicItem: SelectedMusicItem;
   selectedMusicId: string;
 };
 
@@ -189,19 +182,11 @@ const ModalWindow: FC<ModalWindowItems> = ({
             onCloseModalWindow(), setError(false);
           }}
         >
-          <svg
-            width="27"
-            height="27"
-            viewBox="0 0 27 27"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              className={s['closed-img']}
-              d="M6.74367 7.21198L19.573 19.8808L20.2458 19.1994L7.41646 6.53066L6.74367 7.21198ZM6.5418 19.784L7.24883 20.4822L20.7046 6.85577L19.9976 6.15759L6.5418 19.784Z"
-              fill="#FF9900"
-            />
-          </svg>
+          <Image
+            className={s['closed-img']}
+            src={deleteIconUrl}
+            alt={'Clear'}
+          />
         </button>
         <h2 className={s.title}>
           {infoIsOpen ? 'Info Music' : 'Add new music'}

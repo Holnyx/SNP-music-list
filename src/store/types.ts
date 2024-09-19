@@ -1,4 +1,3 @@
-
 export type MusicItem = {
   id: string;
   name: string;
@@ -10,7 +9,7 @@ export type MusicItem = {
 export type MusicState = {
   musicList: MusicItem[];
   activeFilter: FilterMusicValues;
-  searchQuery: string
+  searchQuery: string;
 };
 
 export type FilterMusicValues =
@@ -33,4 +32,15 @@ export type GenresItems = {
   value: string;
   title: FilterMusicValues;
   disabled?: boolean;
+};
+
+export type SelectedMusicItem = {
+  name: string;
+  performer: string;
+  genre: {
+    disabled?: boolean;
+    value: string;
+    title: FilterMusicValues;
+  };
+  year: string | number;
 };

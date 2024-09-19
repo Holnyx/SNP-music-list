@@ -3,6 +3,7 @@ import React, { FC, memo } from 'react';
 import router from 'next/router';
 import Image from 'next/image';
 import starUrl from '/public/img/music-icon.svg?url';
+import deleteIconUrl from '/public/img/delete-icon.svg?url';
 
 import s from './MusicItem.module.sass';
 import cx from 'classnames';
@@ -15,7 +16,8 @@ type MusicItemItems = {
   id: string;
   onClickInfo?: (musicID: string) => void;
   removeMusic?: (payload: { musicId: string }) => void;
-  onClickEdit: (musicID: string) => void;
+  onClickEdit?: (musicID: string) => void;
+  pathMusic?: boolean;
 };
 
 const MusicItemBox: FC<MusicItemItems> = ({
@@ -27,41 +29,33 @@ const MusicItemBox: FC<MusicItemItems> = ({
   onClickInfo,
   removeMusic,
   onClickEdit,
+  pathMusic,
 }) => {
-  const musicPath = router.pathname === '/music/[id]';
   return (
-    <div className={musicPath ? s['item-info'] : s['item']}>
-      {musicPath ? (
+    <div className={pathMusic ? s['item-info'] : s['item']}>
+      {pathMusic ? (
         ''
       ) : (
         <button
           className={s.delete}
-          title="Cancel"
+          title="Delete"
           onClick={() => removeMusic?.({ musicId: id })}
         >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 27 27"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              className={s['delete-img']}
-              d="M6.74367 7.21198L19.573 19.8808L20.2458 19.1994L7.41646 6.53066L6.74367 7.21198ZM6.5418 19.784L7.24883 20.4822L20.7046 6.85577L19.9976 6.15759L6.5418 19.784Z"
-              fill="#FF9900"
-            />
-          </svg>
+          <Image
+            src={deleteIconUrl}
+            alt={'delete-icon'}
+            className={s['delete-icon']}
+          />
         </button>
       )}
 
       <Image
         src={starUrl}
         alt={'music-icon'}
-        className={musicPath ? s['large-icon'] : s.icon}
+        className={pathMusic ? s['large-icon'] : s.icon}
         priority
       />
-      {musicPath ? (
+      {pathMusic ? (
         <div className={s.names}>
           <div className={s.performer}>
             <span className={s.label}>Name</span>
@@ -84,7 +78,7 @@ const MusicItemBox: FC<MusicItemItems> = ({
               id={id}
               className={s.button}
               onClick={() => {
-                onClickEdit(id);
+                onClickEdit?.(id);
               }}
             >
               Edit
@@ -111,7 +105,7 @@ const MusicItemBox: FC<MusicItemItems> = ({
               id={id}
               className={s.button}
               onClick={() => {
-                onClickEdit(id);
+                onClickEdit?.(id);
               }}
             >
               Edit

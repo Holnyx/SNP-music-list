@@ -1,8 +1,9 @@
-import React, { ChangeEvent, FC, memo, useState } from 'react';
+import React, { ChangeEvent, FC, memo, useEffect, useState } from 'react';
 
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import starUrl from '/public/img/loupe-icon.svg?url';
+import deleteIconUrl from '/public/img/delete-icon.svg?url';
 
 import s from './SearchInput.module.sass';
 import cx from 'classnames';
@@ -10,20 +11,25 @@ import cx from 'classnames';
 type SearchInputItems = {
   onSearchChange: (query: string) => void;
   clearSearchInput: (payload: string) => void;
+  defaultValue: string;
 };
 
 const SearchInput: FC<SearchInputItems> = ({
   onSearchChange,
   clearSearchInput,
+  defaultValue,
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(defaultValue);
+  const router = useRouter();
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onSearchChange(event.currentTarget.value);
     setInputValue(event.currentTarget.value);
-    if (event.target.value === '') {
-      router.push('/');
-      setInputValue('');
+    if (!event.currentTarget.value) {
       clearSearchInput('');
+      router.push('/');
+    } else {
+      clearSearchInput(event.currentTarget.value)
     }
   };
 
@@ -32,6 +38,11 @@ const SearchInput: FC<SearchInputItems> = ({
     clearSearchInput('');
     router.push('/');
   };
+
+  useEffect(() => {
+    setInputValue(defaultValue);
+    clearSearchInput(defaultValue)
+  }, [defaultValue]);
 
   return (
     <div className={s['container']}>
@@ -60,19 +71,11 @@ const SearchInput: FC<SearchInputItems> = ({
           title="Cancel"
           onClick={clearInput}
         >
-          <svg
-            width="27"
-            height="27"
-            viewBox="0 0 27 27"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              className={s['delete-img']}
-              d="M6.74367 7.21198L19.573 19.8808L20.2458 19.1994L7.41646 6.53066L6.74367 7.21198ZM6.5418 19.784L7.24883 20.4822L20.7046 6.85577L19.9976 6.15759L6.5418 19.784Z"
-              fill="#c4c4c4"
-            />
-          </svg>
+          <Image
+            className={s['clear-icon']}
+            src={deleteIconUrl}
+            alt={'Clear'}
+          />
         </button>
       )}
     </div>
