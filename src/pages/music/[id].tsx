@@ -5,13 +5,9 @@ import MusicPage from '@/components/pages/MusicPage/MusicPage';
 
 const MusicInfoPage = () => {
   const router = useRouter();
-  const idMusic  = router.query.id;
+  const idMusic = router.query.id;
 
-  return (
-    <>
-      <MusicPage id={String(idMusic)} />
-    </>
-  );
+  return <MusicPage id={String(idMusic)} />;
 };
 
 export default memo(MusicInfoPage);

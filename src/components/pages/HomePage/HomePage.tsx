@@ -8,7 +8,7 @@ import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
 import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
 import { useActionWithPayload } from '@/hooks/useAction';
-import { InitMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
+import { initMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
 import { FilterMusicValues, SelectedMusicItem } from '@/store/types';
 import {
   combinedFilteredMusicsSelector,
@@ -18,8 +18,14 @@ import {
 
 import s from './HomePage.module.sass';
 import cx from 'classnames';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import router from 'next/router';
 
-const HomePage = () => {
+const HomePage = ({
+  search,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  console.log(search = '');
+  
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [infoIsOpen, setInfoIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
@@ -32,6 +38,7 @@ const HomePage = () => {
       year: +Number() || '',
     }
   );
+
   const filteredMusics = useSelector(combinedFilteredMusicsSelector);
   const allMusics = useSelector(musicSelector);
   const selectedMusic = useSelector(state =>
@@ -40,7 +47,7 @@ const HomePage = () => {
 
   const removeMusicAction = useActionWithPayload(removeMusicAC);
   const InitMusicsFromStorageAction = useActionWithPayload(
-    InitMusicsFromStorageAC
+    initMusicsFromStorageAC
   );
 
   const openInfoModal = useCallback(
@@ -102,7 +109,10 @@ const HomePage = () => {
 
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {
-      setCookie('musics', JSON.stringify(allMusics));
+      setCookie('musics', JSON.stringify(allMusics), {
+        path: '/',
+        sameSite: 'lax',
+      });
     } else {
       setCookie('musics', '');
     }
@@ -138,6 +148,15 @@ const HomePage = () => {
       />
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const search = (context.query.search = '');
+  return {
+    props: {
+      search: search,
+    },
+  };
 };
 
 export default memo(HomePage);

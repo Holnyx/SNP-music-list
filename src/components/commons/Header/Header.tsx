@@ -38,6 +38,7 @@ const Header: FC<HeaderItems> = ({ setMenuIsOpen, canGoBack, pathMusic }) => {
     },
     [router, setSearchQuery]
   );
+
   return (
     <div className={s.header}>
       {canGoBack ? (
@@ -70,7 +71,7 @@ const Header: FC<HeaderItems> = ({ setMenuIsOpen, canGoBack, pathMusic }) => {
         <SearchInput
           onSearchChange={handleSearchChange}
           clearSearchInput={setSearchQuery}
-          defaultValue={(router.query.search as string) || ''}
+          defaultValue={router.query.search as string}
         />
       ) : (
         ''

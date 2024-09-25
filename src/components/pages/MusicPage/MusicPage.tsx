@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { setCookie } from 'cookies-next';
+import { getCookie, setCookie } from 'cookies-next';
 
 import HeadComponent from '@/components/commons/HeadComponent/HeadComponent';
 import Header from '@/components/commons/Header/Header';
@@ -9,7 +9,7 @@ import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
 
 import { useActionWithPayload } from '@/hooks/useAction';
-import { removeMusicAC } from '@/store/actions';
+import { initMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
 import { musicSelector, selectedMusicSelector } from '@/store/selectors';
 
 import s from './MusicPage.module.sass';
@@ -25,6 +25,9 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
   const allMusics = useSelector(musicSelector);
   const selectedMusic = useSelector(state => selectedMusicSelector(state, id));
 
+  const InitMusicsFromStorageAction = useActionWithPayload(
+    initMusicsFromStorageAC
+  );
   const removeMusicAction = useActionWithPayload(removeMusicAC);
 
   const openEditModal = useCallback(() => {
@@ -38,10 +41,18 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
   }, []);
 
   useEffect(() => {
-    if (!selectedMusic) {
+    if (!selectedMusic && !allMusics) {
       router.replace('/404');
     }
   }, [selectedMusic, router]);
+
+  useEffect(() => {
+    const storedMusics = getCookie('musics');
+    if (storedMusics) {
+      const parsedMusics = JSON.parse(storedMusics);
+      InitMusicsFromStorageAction(parsedMusics);
+    }
+  }, [InitMusicsFromStorageAction]);
 
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {
@@ -51,8 +62,8 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
     }
   }, [allMusics]);
 
-  const pathMusicID = router.pathname === '/music/[id]';
-  const pathMusic = router.pathname.startsWith('/music/');
+  const isMusicPath = router.pathname === '/music/[id]';
+  const isOnMusicPage = router.pathname.startsWith('/music/');
 
   return (
     <>
@@ -60,20 +71,19 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
         <>
           <HeadComponent title={selectedMusic.name} />
           <Header
-            setMenuIsOpen={() => {}}
-            canGoBack={pathMusicID}
-            pathMusic={pathMusic}
-          />
+            setMenuIsOpen={() => { } }
+            canGoBack={isMusicPath}
+            pathMusic={isOnMusicPage}          />
           <div className={s.container}>
             <div className={s.container_music}>
               <MusicItemBox
                 name={selectedMusic.name}
                 performer={selectedMusic.performer}
                 year={selectedMusic.year}
-                id={selectedMusic.id}
+                id={id}
                 onClickEdit={openEditModal}
                 genre={selectedMusic.genre.title}
-                pathMusic={pathMusic}
+                pathMusic={isOnMusicPage}
               />
             </div>
           </div>
@@ -90,7 +100,7 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
                 },
                 year: selectedMusic.year,
               }}
-              selectedMusicId={selectedMusic.id}
+              selectedMusicId={id}
               deleteMusicOnClick={removeMusicAction}
             />
           )}

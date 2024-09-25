@@ -29,7 +29,7 @@ const SearchInput: FC<SearchInputItems> = ({
       clearSearchInput('');
       router.push('/');
     } else {
-      clearSearchInput(event.currentTarget.value)
+      clearSearchInput(event.currentTarget.value);
     }
   };
 
@@ -41,7 +41,7 @@ const SearchInput: FC<SearchInputItems> = ({
 
   useEffect(() => {
     setInputValue(defaultValue);
-    clearSearchInput(defaultValue)
+    clearSearchInput(defaultValue);
   }, [defaultValue]);
 
   return (
@@ -62,7 +62,7 @@ const SearchInput: FC<SearchInputItems> = ({
         type="text"
         placeholder="Search for new music, news, artists..."
         onChange={handleChange}
-        value={inputValue}
+        defaultValue={defaultValue}
       ></input>
 
       {inputValue && (
