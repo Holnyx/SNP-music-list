@@ -1,13 +1,22 @@
 import { memo } from 'react';
-import { useRouter } from 'next/router';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 import MusicPage from '@/components/pages/MusicPage/MusicPage';
 
-const MusicInfoPage = () => {
-  const router = useRouter();
-  const idMusic = router.query.id;
+const MusicInfoPage = ({
+  id,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  return <MusicPage id={id} />;
+};
 
-  return <MusicPage id={String(idMusic)} />;
+export const getServerSideProps: GetServerSideProps = async context => {
+  const { id } = context.query;
+
+  return {
+    props: {
+      id,
+    },
+  };
 };
 
 export default memo(MusicInfoPage);

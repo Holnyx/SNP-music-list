@@ -3,7 +3,7 @@ export type MusicItem = {
   name: string;
   performer: string;
   genre: GenresItems;
-  year: string | number;
+  year: number;
 };
 
 export type MusicState = {
@@ -42,5 +42,5 @@ export type SelectedMusicItem = {
     value: string;
     title: FilterMusicValues;
   };
-  year: string | number;
+  year: number;
 };

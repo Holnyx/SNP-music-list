@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useId, useState } from 'react';
+import React, {
+  FC,
+  memo,
+  useCallback,
+  useEffect,
+  useId,
+  useState,
+} from 'react';
 
 import { useSelector } from 'react-redux';
 import { getCookie, setCookie } from 'cookies-next';
@@ -18,14 +25,8 @@ import {
 
 import s from './HomePage.module.sass';
 import cx from 'classnames';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import router from 'next/router';
 
-const HomePage = ({
-  search,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  console.log(search = '');
-  
+const HomePage = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [infoIsOpen, setInfoIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
@@ -35,7 +36,7 @@ const HomePage = ({
       name: '',
       performer: '',
       genre: { value: '1', title: 'Other' as FilterMusicValues },
-      year: +Number() || '',
+      year: Number(),
     }
   );
 
@@ -148,15 +149,6 @@ const HomePage = ({
       />
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async context => {
-  const search = (context.query.search = '');
-  return {
-    props: {
-      search: search,
-    },
-  };
 };
 
 export default memo(HomePage);

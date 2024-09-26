@@ -16,7 +16,7 @@ export const musicFilterSelector = createSelector(
 
 export const searchQuerySelector = createSelector(
   rootSelector,
-  state => state.searchQuery || ''
+  state => state.searchQuery 
 );
 
 export const combinedFilteredMusicsSelector = createSelector(
@@ -41,21 +41,3 @@ export const selectedMusicSelector = createSelector(
     return allMusics.find(music => music.id === selectedMusicId);
   }
 );
-
-// if (!searchQuery) {
-//   searchQuery = '';
-// }
-
-// const filteredByGenre =
-//   genreFilter === 'All'
-//     ? musicList
-//     : musicList.filter(music => music.genre.title === genreFilter);
-
-// return filteredByGenre.filter(
-//   music =>
-//     (music.name &&
-//       music.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-//     (music.performer &&
-//       music.performer.toLowerCase().includes(searchQuery.toLowerCase()))
-// );
-// }

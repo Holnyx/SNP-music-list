@@ -62,7 +62,7 @@ const SearchInput: FC<SearchInputItems> = ({
         type="text"
         placeholder="Search for new music, news, artists..."
         onChange={handleChange}
-        defaultValue={defaultValue}
+        value={defaultValue}
       ></input>
 
       {inputValue && (
