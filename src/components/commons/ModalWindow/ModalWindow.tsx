@@ -29,7 +29,7 @@ type ModalWindowItems = {
   infoIsOpen?: boolean;
   editIsOpen: boolean;
   onCloseModalWindow: () => void;
-  deleteMusicOnClick: (payload: { musicId: string }) => void;
+  deleteMusicOnClick: (musicId: string) => void;
   selectedMusicItem: SelectedMusicItem;
   selectedMusicId: string;
 };
@@ -50,7 +50,9 @@ const ModalWindow: FC<ModalWindowItems> = ({
   const [selectGenre, setSelectGenre] = useState(
     selectedMusicItem.genre || genresItems[0]
   );
-  const [inputYear, setInputYear] = useState(selectedMusicItem.year);
+  const [inputYear, setInputYear] = useState<number | string>(
+    selectedMusicItem.year
+  );
   const [error, setError] = useState(false);
 
   const addMusicAction = useActionWithPayload(addMusicAC);
@@ -114,7 +116,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
       name: inputName,
       performer: inputPerformer,
       genre: selectGenre,
-      year: inputYear,
+      year: Number(inputYear),
     };
     menuIsOpen ? addMusicHandler(newMusic) : changeMusic();
   }, [
@@ -140,7 +142,11 @@ const ModalWindow: FC<ModalWindowItems> = ({
       setInputName(selectedMusicItem.name);
       setInputPerformer(selectedMusicItem.performer);
       setSelectGenre(selectedMusicItem.genre);
-      setInputYear(selectedMusicItem.year);
+      if (selectedMusicItem.year !== 0) {
+        setInputYear(selectedMusicItem.year);
+      } else {
+        setInputYear('');
+      }
     } else if (menuIsOpen) {
       setInputName('');
       setInputPerformer('');
@@ -148,15 +154,6 @@ const ModalWindow: FC<ModalWindowItems> = ({
       setInputYear('');
     }
   }, [editIsOpen, menuIsOpen, selectedMusicItem]);
-
-  const errorGenre =
-    error && selectGenre.disabled ? (
-      <span className={cx(s['error-message'], s['error-message-genre'])}>
-        You must select a genre
-      </span>
-    ) : (
-      ''
-    );
 
   const showModalWindow = cx(s.container, {
     [s.active]: menuIsOpen || infoIsOpen || editIsOpen,
@@ -189,7 +186,11 @@ const ModalWindow: FC<ModalWindowItems> = ({
           />
         </button>
         <h2 className={s.title}>
-          {infoIsOpen ? 'Info Music' : 'Add new music'}
+          {infoIsOpen
+            ? 'Info Music'
+            : editIsOpen
+            ? 'Edit music'
+            : 'Add new music'}
         </h2>
         <form className={s.form}>
           <fieldset className={s.add_images_box}>
@@ -205,7 +206,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
                 <span className={s.label}>Genre</span>
                 <h6 className={s.names}>{selectedMusicItem.genre.title}</h6>
 
-                {selectedMusicItem.year && (
+                {selectedMusicItem.year !== 0 && (
                   <>
                     <span className={s.label}>Year</span>
                     <h6 className={s.names}>{selectedMusicItem.year}</h6>
@@ -266,7 +267,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
             {!menuIsOpen ? (
               <Button
                 onClickHandler={() => {
-                  deleteMusicOnClick({ musicId: selectedMusicId }),
+                  deleteMusicOnClick(selectedMusicId),
                     onCloseModalWindow(),
                     setError(false);
                 }}

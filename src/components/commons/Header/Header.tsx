@@ -17,9 +17,15 @@ type HeaderItems = {
   canGoBack?: boolean;
   pathMusic?: boolean;
   setMenuIsOpen: Dispatch<SetStateAction<boolean>>;
+  search: string;
 };
 
-const Header: FC<HeaderItems> = ({ setMenuIsOpen, canGoBack, pathMusic }) => {
+const Header: FC<HeaderItems> = ({
+  setMenuIsOpen,
+  canGoBack,
+  pathMusic,
+  search,
+}) => {
   const router = useRouter();
 
   const setSearchQuery = useActionWithPayload(setSearchQueryAC);
@@ -38,7 +44,7 @@ const Header: FC<HeaderItems> = ({ setMenuIsOpen, canGoBack, pathMusic }) => {
     },
     [router, setSearchQuery]
   );
-  
+
   return (
     <div className={s.header}>
       {canGoBack ? (
@@ -71,7 +77,7 @@ const Header: FC<HeaderItems> = ({ setMenuIsOpen, canGoBack, pathMusic }) => {
         <SearchInput
           onSearchChange={handleSearchChange}
           clearSearchInput={setSearchQuery}
-          defaultValue={router.query.search as string || ''}
+          defaultValue={search}
         />
       ) : (
         ''
@@ -79,6 +85,5 @@ const Header: FC<HeaderItems> = ({ setMenuIsOpen, canGoBack, pathMusic }) => {
     </div>
   );
 };
-
 
 export default memo(Header);

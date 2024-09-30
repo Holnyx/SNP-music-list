@@ -40,11 +40,10 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
     setEditIsOpen(false);
   }, []);
 
-  useEffect(() => {
-    if (allMusics.length > 0 && !selectedMusic) {
-      router.replace('/404');
-    }
-  }, [selectedMusic, router, allMusics]);
+  const removeMusicHandler = (musicId: string) => {
+    router.push('/');
+    removeMusicAction({ musicId });
+  };
 
   useEffect(() => {
     const storedMusics = getCookie('musics');
@@ -74,6 +73,7 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
             setMenuIsOpen={() => {}}
             canGoBack={isMusicPath}
             pathMusic={isOnMusicPage}
+            search={''}
           />
           <div className={s.container}>
             <div className={s.container_music}>
@@ -102,7 +102,7 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
                 year: selectedMusic.year,
               }}
               selectedMusicId={selectedMusic.id}
-              deleteMusicOnClick={removeMusicAction}
+              deleteMusicOnClick={removeMusicHandler}
             />
           )}
         </>
