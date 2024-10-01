@@ -1,16 +1,15 @@
-
 export type MusicItem = {
   id: string;
   name: string;
   performer: string;
   genre: GenresItems;
-  year: string | number;
+  year: number;
 };
 
 export type MusicState = {
   musicList: MusicItem[];
   activeFilter: FilterMusicValues;
-  searchQuery: string
+  searchQuery: string;
 };
 
 export type FilterMusicValues =
@@ -27,10 +26,22 @@ export type FilterMusicValues =
   | 'Reggae / Dancehall'
   | 'Funk'
   | 'Other'
-  | 'All';
+  | 'All'
+  | 'Choose genre *';
 
 export type GenresItems = {
   value: string;
   title: FilterMusicValues;
   disabled?: boolean;
+};
+
+export type SelectedMusicItem = {
+  name: string;
+  performer: string;
+  genre: {
+    disabled?: boolean;
+    value: string;
+    title: FilterMusicValues;
+  };
+  year: number;
 };

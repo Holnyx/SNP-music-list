@@ -78,7 +78,7 @@ export const changeMusicInputsAC = (payload: {
   payload,
 });
 
-export const InitMusicsFromStorageAC = (
+export const initMusicsFromStorageAC = (
   music: MusicItem[]
 ): InitMusicsFromStorage => ({
   type: 'INIT-MUSICS-FROM-STORAGE',

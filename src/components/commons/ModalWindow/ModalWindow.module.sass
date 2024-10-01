@@ -157,12 +157,15 @@
     border-radius: 6px
     cursor: pointer
     transition: 0.5s background ease
+    .closed-img
+        width: 27px
+        height: 27px
 
     &:hover
         background-color: $color-orange
 
         .closed-img
-            fill: $color-gray
+            filter: invert(150%) sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(0%) contrast(50%)
 
     @include mobile
         width: 24px
@@ -199,15 +202,16 @@
     border: 1px solid $color-orange
     border-radius: 6px
     font-family: "Heebo"
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.25)
+    transition: box-shadow 0.5s ease
 
     &::placeholder
         color: $color-light-gray
 
-    &:focus-visible
+    &:focus
         outline: none
         border: 1px solid $color-red
         box-shadow: 0 0 5px $color-red
-        transition: box-shadow 0.5s ease
 
     @include mobile
         width: 120px

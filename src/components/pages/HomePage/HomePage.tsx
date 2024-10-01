@@ -1,14 +1,15 @@
-import React, { memo, useCallback, useEffect, useId, useState } from 'react';
+import React, { FC, memo, useCallback, useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
+import { getCookie, setCookie } from 'cookies-next';
 
 import Header from '@/components/commons/Header/Header';
 import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
 import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
 import { useActionWithPayload } from '@/hooks/useAction';
-import { InitMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
-import { FilterMusicValues } from '@/store/types';
+import { initMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
+import { FilterMusicValues, MusicItem, SelectedMusicItem } from '@/store/types';
 import {
   combinedFilteredMusicsSelector,
   musicSelector,
@@ -17,27 +18,39 @@ import {
 
 import s from './HomePage.module.sass';
 import cx from 'classnames';
+import { useDebounce } from '@/hooks/useDebounce';
 
-const HomePage = () => {
+type HomePageItem = {
+  search: string;
+};
+
+const HomePage: FC<HomePageItem> = ({ search }) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [infoIsOpen, setInfoIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
   const [selectedMusicId, setSelectedMusicId] = useState<string>('');
-  const [selectedMusicItem, setSelectedMusicItem] = useState({
-    name: '',
-    performer: '',
-    genre: { value: '1', title: 'Other' as FilterMusicValues },
-    year: +Number() || '',
-  });
+  const [selectedMusicItem, setSelectedMusicItem] = useState<SelectedMusicItem>(
+    {
+      name: '',
+      performer: '',
+      genre: { value: '1', title: 'Other' as FilterMusicValues },
+      year: +Number(),
+    }
+  );
+  const [searchTerm, setSearchTerm] = useState(search);
+  const [results, setResults] = useState<MusicItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
   const filteredMusics = useSelector(combinedFilteredMusicsSelector);
   const allMusics = useSelector(musicSelector);
   const selectedMusic = useSelector(state =>
     selectedMusicSelector(state, selectedMusicId)
   );
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const removeMusicAction = useActionWithPayload(removeMusicAC);
   const InitMusicsFromStorageAction = useActionWithPayload(
-    InitMusicsFromStorageAC
+    initMusicsFromStorageAC
   );
 
   const openInfoModal = useCallback(
@@ -77,6 +90,16 @@ const HomePage = () => {
     setEditIsOpen(false);
   }, []);
 
+  const removeMusicHandler = (musicId: string) => {
+    removeMusicAction({ musicId });
+  };
+
+  const searchCharacters = (search: string): Promise<MusicItem[]> => {
+    return new Promise<MusicItem[]>(resolve => {
+      resolve(filteredMusics);
+    });
+  };
+
   // Update input values
   useEffect(() => {
     if (selectedMusic) {
@@ -90,46 +113,71 @@ const HomePage = () => {
   }, [selectedMusic, selectedMusicId]);
 
   useEffect(() => {
-    const storedMusics = localStorage.getItem('musics');
+    const storedMusics = getCookie('musics');
     if (storedMusics) {
       const parsedMusics = JSON.parse(storedMusics);
       InitMusicsFromStorageAction(parsedMusics);
+      setResults(parsedMusics);
     }
   }, [InitMusicsFromStorageAction]);
 
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {
-      localStorage.setItem('musics', JSON.stringify(allMusics));
+      setCookie('musics', JSON.stringify(allMusics), {
+        path: '/',
+        sameSite: 'lax',
+      });
     } else {
-      localStorage.removeItem('musics');
+      setCookie('musics', '');
     }
   }, [allMusics]);
 
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      setIsSearching(true);
+      setTimeout(() => {
+        searchCharacters(debouncedSearchTerm).then((results: MusicItem[]) => {
+          setIsSearching(false);
+          setResults(results);
+        });
+      }, 500);
+    } else {
+      setResults(allMusics);
+      setIsSearching(false);
+    }
+  }, [debouncedSearchTerm, allMusics]);
+
   return (
     <div className={s.container}>
-      <Header setMenuIsOpen={setMenuIsOpen} />
+      <Header
+        setMenuIsOpen={setMenuIsOpen}
+        defaultSearchValue={debouncedSearchTerm}
+        setSearchTerm={setSearchTerm}
+      />
       <FilterGenres />
       <div className={s.container_music}>
-        {filteredMusics.map((element, i) => {
-          return (
-            <MusicItemBox
-              key={element.id}
-              id={element.id}
-              name={element.name}
-              performer={element.performer}
-              removeMusic={removeMusicAction}
-              onClickInfo={openInfoModal}
-              onClickEdit={openEditModal}
-            />
-          );
-        })}
+        {isSearching && <div className={s['search-title']}>Searching ...</div>}
+        {!isSearching &&
+          results.map((element, i) => {
+            return (
+              <MusicItemBox
+                key={element.id}
+                id={element.id}
+                name={element.name}
+                performer={element.performer}
+                removeMusic={removeMusicAction}
+                onClickInfo={openInfoModal}
+                onClickEdit={openEditModal}
+              />
+            );
+          })}
       </div>
       <ModalWindow
         onCloseModalWindow={onCloseModalWindow}
         menuIsOpen={menuIsOpen}
         infoIsOpen={infoIsOpen}
         editIsOpen={editIsOpen}
-        deleteMusicOnClick={removeMusicAction}
+        deleteMusicOnClick={removeMusicHandler}
         selectedMusicItem={selectedMusicItem}
         selectedMusicId={selectedMusicId}
       />
