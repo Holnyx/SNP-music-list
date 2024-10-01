@@ -39,7 +39,7 @@ const musicReducer = (
                 name: action.payload.name,
                 performer: action.payload.performer,
                 genre: action.payload.genre,
-                year: action.payload.year,
+                year: Number(action.payload.year),
               }
             : music
         ),

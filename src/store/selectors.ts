@@ -29,10 +29,8 @@ export const combinedFilteredMusicsSelector = createSelector(
 
     return filteredByGenre.filter(
       music =>
-        music.name.toLowerCase().includes(String(searchQuery).toLowerCase()) ||
-        music.performer
-          .toLowerCase()
-          .includes(String(searchQuery).toLowerCase())
+        music.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        music.performer.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }
 );
@@ -43,4 +41,3 @@ export const selectedMusicSelector = createSelector(
     return allMusics.find(music => music.id === selectedMusicId);
   }
 );
-

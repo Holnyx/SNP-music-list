@@ -17,7 +17,7 @@ type HeaderItems = {
   canGoBack?: boolean;
   pathMusic?: boolean;
   setMenuIsOpen: Dispatch<SetStateAction<boolean>>;
-  search: string;
+  defaultSearchValue: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
 };
 
@@ -25,7 +25,7 @@ const Header: FC<HeaderItems> = ({
   setMenuIsOpen,
   canGoBack,
   pathMusic,
-  search,
+  defaultSearchValue,
   setSearchTerm,
 }) => {
   const router = useRouter();
@@ -79,7 +79,7 @@ const Header: FC<HeaderItems> = ({
         <SearchInput
           onSearchChange={handleSearchChange}
           clearSearchInput={setSearchQuery}
-          defaultValue={search}
+          defaultValue={defaultSearchValue}
           setSearchTerm={setSearchTerm}
         />
       ) : (

@@ -7,7 +7,7 @@ import Header from '@/components/commons/Header/Header';
 import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
 import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
-import { useDebounce, useActionWithPayload } from '@/hooks/useAction';
+import { useActionWithPayload } from '@/hooks/useAction';
 import { initMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
 import { FilterMusicValues, MusicItem, SelectedMusicItem } from '@/store/types';
 import {
@@ -18,6 +18,7 @@ import {
 
 import s from './HomePage.module.sass';
 import cx from 'classnames';
+import { useDebounce } from '@/hooks/useDebounce';
 
 type HomePageItem = {
   search: string;
@@ -150,7 +151,7 @@ const HomePage: FC<HomePageItem> = ({ search }) => {
     <div className={s.container}>
       <Header
         setMenuIsOpen={setMenuIsOpen}
-        search={debouncedSearchTerm}
+        defaultSearchValue={debouncedSearchTerm}
         setSearchTerm={setSearchTerm}
       />
       <FilterGenres />

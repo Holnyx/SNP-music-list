@@ -26,7 +26,8 @@ export type FilterMusicValues =
   | 'Reggae / Dancehall'
   | 'Funk'
   | 'Other'
-  | 'All';
+  | 'All'
+  | 'Choose genre *';
 
 export type GenresItems = {
   value: string;

@@ -73,7 +73,8 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
             setMenuIsOpen={() => {}}
             canGoBack={isMusicPath}
             pathMusic={isOnMusicPage}
-            search={''}
+            defaultSearchValue={''}
+            setSearchTerm={() => {}}
           />
           <div className={s.container}>
             <div className={s.container_music}>

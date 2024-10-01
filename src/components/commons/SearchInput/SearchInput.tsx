@@ -7,7 +7,6 @@ import deleteIconUrl from '/public/img/delete-icon.svg?url';
 
 import s from './SearchInput.module.sass';
 import cx from 'classnames';
-import { useDebounce } from '@/hooks/useAction';
 
 type SearchInputItems = {
   onSearchChange: (query: string) => void;
@@ -24,7 +23,6 @@ const SearchInput: FC<SearchInputItems> = ({
 }) => {
   const [inputValue, setInputValue] = useState(defaultValue);
   const router = useRouter();
-  const debouncedInput = useDebounce(inputValue, 500);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onSearchChange(event.currentTarget.value);
