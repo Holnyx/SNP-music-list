@@ -7,9 +7,9 @@ import Header from '@/components/commons/Header/Header';
 import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
 import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
-import useDebounce, { useActionWithPayload } from '@/hooks/useAction';
+import { useDebounce, useActionWithPayload } from '@/hooks/useAction';
 import { initMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
-import { FilterMusicValues, SelectedMusicItem } from '@/store/types';
+import { FilterMusicValues, MusicItem, SelectedMusicItem } from '@/store/types';
 import {
   combinedFilteredMusicsSelector,
   musicSelector,
@@ -36,12 +36,16 @@ const HomePage: FC<HomePageItem> = ({ search }) => {
       year: +Number(),
     }
   );
+  const [searchTerm, setSearchTerm] = useState(search);
+  const [results, setResults] = useState<MusicItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const filteredMusics = useSelector(combinedFilteredMusicsSelector);
   const allMusics = useSelector(musicSelector);
   const selectedMusic = useSelector(state =>
     selectedMusicSelector(state, selectedMusicId)
   );
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const removeMusicAction = useActionWithPayload(removeMusicAC);
   const InitMusicsFromStorageAction = useActionWithPayload(
@@ -89,6 +93,12 @@ const HomePage: FC<HomePageItem> = ({ search }) => {
     removeMusicAction({ musicId });
   };
 
+  const searchCharacters = (search: string): Promise<MusicItem[]> => {
+    return new Promise<MusicItem[]>(resolve => {
+      resolve(filteredMusics);
+    });
+  };
+
   // Update input values
   useEffect(() => {
     if (selectedMusic) {
@@ -106,6 +116,7 @@ const HomePage: FC<HomePageItem> = ({ search }) => {
     if (storedMusics) {
       const parsedMusics = JSON.parse(storedMusics);
       InitMusicsFromStorageAction(parsedMusics);
+      setResults(parsedMusics);
     }
   }, [InitMusicsFromStorageAction]);
 
@@ -120,27 +131,45 @@ const HomePage: FC<HomePageItem> = ({ search }) => {
     }
   }, [allMusics]);
 
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      setIsSearching(true);
+      setTimeout(() => {
+        searchCharacters(debouncedSearchTerm).then((results: MusicItem[]) => {
+          setIsSearching(false);
+          setResults(results);
+        });
+      }, 500);
+    } else {
+      setResults(allMusics);
+      setIsSearching(false);
+    }
+  }, [debouncedSearchTerm, allMusics]);
+
   return (
     <div className={s.container}>
       <Header
         setMenuIsOpen={setMenuIsOpen}
-        search={search}
+        search={debouncedSearchTerm}
+        setSearchTerm={setSearchTerm}
       />
       <FilterGenres />
       <div className={s.container_music}>
-        {filteredMusics.map((element, i) => {
-          return (
-            <MusicItemBox
-              key={element.id}
-              id={element.id}
-              name={element.name}
-              performer={element.performer}
-              removeMusic={removeMusicAction}
-              onClickInfo={openInfoModal}
-              onClickEdit={openEditModal}
-            />
-          );
-        })}
+        {isSearching && <div className={s['search-title']}>Searching ...</div>}
+        {!isSearching &&
+          results.map((element, i) => {
+            return (
+              <MusicItemBox
+                key={element.id}
+                id={element.id}
+                name={element.name}
+                performer={element.performer}
+                removeMusic={removeMusicAction}
+                onClickInfo={openInfoModal}
+                onClickEdit={openEditModal}
+              />
+            );
+          })}
       </div>
       <ModalWindow
         onCloseModalWindow={onCloseModalWindow}

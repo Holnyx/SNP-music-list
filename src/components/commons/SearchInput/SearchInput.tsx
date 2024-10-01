@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, memo, useEffect, useState } from 'react';
+import React, { ChangeEvent, Dispatch, FC, memo, SetStateAction, useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -7,24 +7,29 @@ import deleteIconUrl from '/public/img/delete-icon.svg?url';
 
 import s from './SearchInput.module.sass';
 import cx from 'classnames';
+import { useDebounce } from '@/hooks/useAction';
 
 type SearchInputItems = {
   onSearchChange: (query: string) => void;
   clearSearchInput: (payload: string) => void;
   defaultValue: string;
+  setSearchTerm:  Dispatch<SetStateAction<string>>;
 };
 
 const SearchInput: FC<SearchInputItems> = ({
   onSearchChange,
   clearSearchInput,
   defaultValue,
+  setSearchTerm
 }) => {
   const [inputValue, setInputValue] = useState(defaultValue);
   const router = useRouter();
+  const debouncedInput = useDebounce(inputValue, 500);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onSearchChange(event.currentTarget.value);
     setInputValue(event.currentTarget.value);
+    setSearchTerm(event.currentTarget.value);
     if (!event.currentTarget.value) {
       clearSearchInput('');
       router.push('/');
@@ -34,6 +39,7 @@ const SearchInput: FC<SearchInputItems> = ({
   };
 
   const clearInput = () => {
+    setSearchTerm('')
     setInputValue('');
     clearSearchInput('');
     router.push('/');
@@ -62,7 +68,7 @@ const SearchInput: FC<SearchInputItems> = ({
         type="text"
         placeholder="Search for new music, news, artists..."
         onChange={handleChange}
-        value={defaultValue}
+        value={inputValue}
       ></input>
 
       {inputValue && (

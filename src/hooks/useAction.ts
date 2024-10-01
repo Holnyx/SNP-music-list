@@ -26,7 +26,7 @@ export const useAction = (action: () => PayloadAction<undefined>) => {
   return handler;
 };
 
-export default function useDebounce(value: string, delay: number) {
+export const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
@@ -40,4 +40,6 @@ export default function useDebounce(value: string, delay: number) {
   }, [value, delay]);
 
   return debouncedValue;
-}
+};
+
+
