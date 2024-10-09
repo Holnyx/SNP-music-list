@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { AppRootStateItems } from '.';
+import { MusicItem } from './types';
 
 const rootSelector = createSelector(
   (state: AppRootStateItems) => state,
@@ -25,10 +26,10 @@ export const combinedFilteredMusicsSelector = createSelector(
     const filteredByGenre =
       genreFilter === 'All'
         ? musicList
-        : musicList.filter(music => music.genre.title === genreFilter);
+        : musicList.filter((music: MusicItem) => music.genre.title === genreFilter);
 
     return filteredByGenre.filter(
-      music =>
+      (music: MusicItem) =>
         music.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         music.performer.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -38,6 +39,6 @@ export const combinedFilteredMusicsSelector = createSelector(
 export const selectedMusicSelector = createSelector(
   [musicSelector, (state, selectedMusicId) => selectedMusicId],
   (allMusics, selectedMusicId) => {
-    return allMusics.find(music => music.id === selectedMusicId);
+    return allMusics.find((music: MusicItem) => music.id === selectedMusicId);
   }
 );

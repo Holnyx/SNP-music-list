@@ -1,0 +1,26 @@
+{
+  "music": [
+    {
+      "id": "1",
+      "name": "Toxicity",
+      "performer": "SOAD",
+      "genre": {
+        "disabled?": false,
+        "value": "10",
+        "title": "Rock"
+      },
+      "year": 2001
+    },
+    {
+      "id": "2",
+      "name": "Run",
+      "performer": "Tom Figgins",
+      "genre": {
+        "disabled?": false,
+        "value": "14",
+        "title": "Other"
+      },
+      "year": 0
+    }
+  ]
+}

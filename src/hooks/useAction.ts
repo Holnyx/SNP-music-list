@@ -1,14 +1,14 @@
 import { useDispatch } from 'react-redux';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 export const useActionWithPayload = <T>(
-  action: (payload: T) => PayloadAction<T>
+  action: (...args: any[]) => PayloadAction<T>
 ) => {
   const dispatch = useDispatch();
   const handler = useCallback(
-    (payload: T) => {
-      dispatch(action(payload));
+    (...args: any[]) => {
+      dispatch(action(...args));
     },
     [dispatch, action]
   );
