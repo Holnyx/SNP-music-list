@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { getCookie, setCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next';
 
 import HeadComponent from '@/components/commons/HeadComponent/HeadComponent';
 import Header from '@/components/commons/Header/Header';
@@ -9,7 +9,7 @@ import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
 
 import { useActionWithPayload } from '@/hooks/useAction';
-import { initMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
+import { deleteMusicRequestAC, getAllMusicRequestAC } from '@/store/actions';
 import { musicSelector, selectedMusicSelector } from '@/store/selectors';
 
 import s from './MusicPage.module.sass';
@@ -25,10 +25,8 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
   const allMusics = useSelector(musicSelector);
   const selectedMusic = useSelector(state => selectedMusicSelector(state, id));
 
-  const InitMusicsFromStorageAction = useActionWithPayload(
-    initMusicsFromStorageAC
-  );
-  const removeMusicAction = useActionWithPayload(removeMusicAC);
+  const removeMusicAction = useActionWithPayload(deleteMusicRequestAC);
+  const getAllMusicAction = useActionWithPayload(getAllMusicRequestAC);
 
   const openEditModal = useCallback(() => {
     if (selectedMusic) {
@@ -41,17 +39,13 @@ const MusicPage: FC<MusicPageItems> = ({ id }) => {
   }, []);
 
   const removeMusicHandler = (musicId: string) => {
-    router.push('/');
     removeMusicAction({ musicId });
+    router.push('/');
   };
 
   useEffect(() => {
-    const storedMusics = getCookie('musics');
-    if (storedMusics) {
-      const parsedMusics = JSON.parse(storedMusics);
-      InitMusicsFromStorageAction(parsedMusics);
-    }
-  }, [InitMusicsFromStorageAction]);
+    getAllMusicAction();
+  }, [getAllMusicAction]);
 
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {

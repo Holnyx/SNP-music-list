@@ -39,7 +39,9 @@ const MusicItemBox: FC<MusicItemItems> = ({
         <button
           className={s.delete}
           title="Delete"
-          onClick={() => removeMusic?.({ musicId: id })}
+          onClick={() => {
+            removeMusic?.({ musicId: id });
+          }}
         >
           <Image
             src={deleteIconUrl}

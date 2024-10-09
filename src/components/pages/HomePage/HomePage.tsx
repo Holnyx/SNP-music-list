@@ -1,14 +1,15 @@
 import React, { FC, memo, useCallback, useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
-import { getCookie, setCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next';
 
 import Header from '@/components/commons/Header/Header';
 import FilterGenres from '@/components/commons/FilterGenres/FilterGenres';
 import ModalWindow from '@/components/commons/ModalWindow/ModalWindow';
 import MusicItemBox from '@/components/commons/MusicItemBox/MusicItemBox';
 import { useActionWithPayload } from '@/hooks/useAction';
-import { initMusicsFromStorageAC, removeMusicAC } from '@/store/actions';
+import { useDebounce } from '@/hooks/useDebounce';
+import { deleteMusicRequestAC, getAllMusicRequestAC } from '@/store/actions';
 import { FilterMusicValues, MusicItem, SelectedMusicItem } from '@/store/types';
 import {
   combinedFilteredMusicsSelector,
@@ -18,7 +19,6 @@ import {
 
 import s from './HomePage.module.sass';
 import cx from 'classnames';
-import { useDebounce } from '@/hooks/useDebounce';
 
 type HomePageItem = {
   search: string;
@@ -34,7 +34,7 @@ const HomePage: FC<HomePageItem> = ({ search }) => {
       name: '',
       performer: '',
       genre: { value: '1', title: 'Other' as FilterMusicValues },
-      year: +Number(),
+      year: 0,
     }
   );
   const [searchTerm, setSearchTerm] = useState(search);
@@ -48,10 +48,8 @@ const HomePage: FC<HomePageItem> = ({ search }) => {
   );
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const removeMusicAction = useActionWithPayload(removeMusicAC);
-  const InitMusicsFromStorageAction = useActionWithPayload(
-    initMusicsFromStorageAC
-  );
+  const removeMusicAction = useActionWithPayload(deleteMusicRequestAC);
+  const getAllMusicAction = useActionWithPayload(getAllMusicRequestAC);
 
   const openInfoModal = useCallback(
     (id: string) => {
@@ -113,13 +111,8 @@ const HomePage: FC<HomePageItem> = ({ search }) => {
   }, [selectedMusic, selectedMusicId]);
 
   useEffect(() => {
-    const storedMusics = getCookie('musics');
-    if (storedMusics) {
-      const parsedMusics = JSON.parse(storedMusics);
-      InitMusicsFromStorageAction(parsedMusics);
-      setResults(parsedMusics);
-    }
-  }, [InitMusicsFromStorageAction]);
+    getAllMusicAction();
+  }, [getAllMusicAction]);
 
   useEffect(() => {
     if (allMusics && allMusics.length > 0) {

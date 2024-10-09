@@ -18,7 +18,7 @@ import Select from '../Select/Select';
 
 import { MusicItem, SelectedMusicItem } from '@/store/types';
 import { useActionWithPayload } from '@/hooks/useAction';
-import { addMusicAC, changeMusicInputsAC } from '@/store/actions';
+import { addMusicRequestAC, updateMusicRequestAC } from '@/store/actions';
 import { genresItems } from '@/store/constants';
 
 import s from './ModalWindow.module.sass';
@@ -55,8 +55,8 @@ const ModalWindow: FC<ModalWindowItems> = ({
   );
   const [error, setError] = useState(false);
 
-  const addMusicAction = useActionWithPayload(addMusicAC);
-  const changeMusicInputsAction = useActionWithPayload(changeMusicInputsAC);
+  const addMusicAction = useActionWithPayload(addMusicRequestAC);
+  const changeMusicInputsAction = useActionWithPayload(updateMusicRequestAC);
 
   const checkInputsValue =
     inputName.length > 1 &&
@@ -74,7 +74,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
           inputPerformer !== '' ? inputPerformer : selectedMusicItem.performer;
         const updatedYear =
           inputYear !== '' ? inputYear : selectedMusicItem.year;
-        changeMusicInputsAction({
+        changeMusicInputsAction(selectedMusicId, {
           musicId: selectedMusicId,
           name: updatedName,
           performer: updatedPerformer,
@@ -100,7 +100,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
   const addMusicHandler = useCallback(
     (music: MusicItem) => {
       if (checkInputsValue) {
-        addMusicAction({ music });
+        addMusicAction(music);
         onCloseModalWindow();
         setError(false);
       } else {
@@ -158,7 +158,7 @@ const ModalWindow: FC<ModalWindowItems> = ({
   const showModalWindow = cx(s.container, {
     [s.active]: menuIsOpen || infoIsOpen || editIsOpen,
   });
-  const addMusic = cx(s.buttons_box, { [s.add_music]: menuIsOpen });
+  const addMusicStyle = cx(s.buttons_box, { [s.add_music]: menuIsOpen });
   const infoMusic = cx(s.window, { [s.info]: infoIsOpen });
 
   return (
@@ -263,13 +263,13 @@ const ModalWindow: FC<ModalWindowItems> = ({
           </fieldset>
         </form>
         {!infoIsOpen ? (
-          <div className={addMusic}>
+          <div className={addMusicStyle}>
             {!menuIsOpen ? (
               <Button
                 onClickHandler={() => {
-                  deleteMusicOnClick(selectedMusicId),
-                    onCloseModalWindow(),
-                    setError(false);
+                  deleteMusicOnClick(selectedMusicId);
+                  onCloseModalWindow();
+                  setError(false);
                 }}
                 title="Delete"
               />
